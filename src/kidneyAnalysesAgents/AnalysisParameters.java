@@ -1,5 +1,5 @@
 package kidneyAnalysesAgents;
 
-public enum CampuriAnalize {
+public enum AnalysisParameters {
 	GRAVITY, PH, OSMO, COND, UREA, CALC, KIDNEYSTONES;
 }

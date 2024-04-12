@@ -14,14 +14,14 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 
-public class BazaDeDateAnalizeGui extends JFrame {
+public class AnalysesDataSetGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	// Agent banca
-	private AgentBanca agentBanca;
+	private AgentAnalysesDataSet agentBanca;
 
 	// Handle pentru operatiile cu fisiere
-	private AdministrareFisier adminFisier;
+	private FileAdministrator adminFisier;
 
 	// Regex pentru CNP
 	private String regexCNP = "^[1-9]\\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])(0[1-9]|[1-4]\\d|5[0-2]|99)(00[1-9]|0[1-9]\\d|[1-9]\\d\\d)\\d$";
@@ -36,7 +36,7 @@ public class BazaDeDateAnalizeGui extends JFrame {
 	/**
 	 * Create the application.
 	 */
-	public BazaDeDateAnalizeGui(AgentBanca aB) {
+	public AnalysesDataSetGUI(AgentAnalysesDataSet aB) {
 		super(aB.getLocalName());
 		agentBanca = aB;
 		initialize();
@@ -122,15 +122,15 @@ public class BazaDeDateAnalizeGui extends JFrame {
 					String cnpCautat = txtCnp.getText();
 
 					try {
-						adminFisier = new AdministrareFisier("clienti.txt");
+						adminFisier = new FileAdministrator("clienti.txt");
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 
-					ArrayList<Analize> clienti = adminFisier.GetClienti();
+					ArrayList<Analyses> clienti = adminFisier.GetAllAnalyses();
 
-					for (Analize c : clienti) {
+					for (Analyses c : clienti) {
 						if (c.getCNP().equals(cnpCautat)) {
 							txtNume.setText(c.getNume());
 							txtPrenume.setText(c.getPrenume());
