@@ -253,7 +253,7 @@ public class AddAnalysesGUI extends JFrame {
 		txtCond.setForeground(fg);
 	}
 
-	public void afiseazaInterfata() {
+	public void showInterface() {
 		frmnAdaugareAnalize.setVisible(true);
 	}
 }

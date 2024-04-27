@@ -21,7 +21,7 @@ public class AgentAddAnalyses extends Agent {
 
 		// Creation and
 		interfaceAddAnalyses = new AddAnalysesGUI(this);
-		interfaceAddAnalyses.afiseazaInterfata();
+		interfaceAddAnalyses.showInterface();
 
 		System.out.println("\nThe agent " + getAID().getName() + " is ready.\n");
 	}
