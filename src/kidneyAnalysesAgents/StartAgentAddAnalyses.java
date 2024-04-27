@@ -6,19 +6,18 @@ import jade.core.Runtime;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 
-public class StartAnalysesDataSetAgent {
+public class StartAgentAddAnalyses {
 
 	public static void main(String[] args) {
 
-		String host = "localhost"; // JADE Book Trading environment Main Container host
-		String port = "1099"; // JADE Dataset environment Main Container port
+		String host = "localhost"; // JADE Bank environment Main Container host
+		String port = "1099"; // JADE Bank environment Main Container port
+		String agentName = "AgentAddAnalyses"; // Nume agent
 
-		String agentName = "AnalysesDataSet"; // The name of the agent
-
-		// Instance of the runtime env
+		// Preluarea instanþei mediului de execuþie JADE
 		Runtime runtime = Runtime.instance();
 
-		// Container creation
+		// Crearea unui container în care sã ruleze agentul
 		Profile p = new ProfileImpl();
 
 		p.setParameter(Profile.MAIN_HOST, host);
@@ -27,9 +26,9 @@ public class StartAnalysesDataSetAgent {
 		ContainerController cc = runtime.createAgentContainer(p);
 
 		if (cc != null) {
-			// Creating an agent for the analyses dataset
+			// crearea unui agent pentru adaugare analize si lansarea lui in executie
 			try {
-				AgentController ac = cc.createNewAgent(agentName, "kidneyAnalysesAgents.AnalysesDataSet", null);
+				AgentController ac = cc.createNewAgent(agentName, "kidneyAnalysesAgents.AgentAddAnalyses", null);
 				ac.start();
 
 			} catch (Exception e) {
