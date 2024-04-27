@@ -14,6 +14,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JTextArea;
@@ -21,21 +23,19 @@ import java.awt.SystemColor;
 import javax.swing.JCheckBox;
 import javax.swing.Box;
 import javax.swing.JPanel;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class AnalysesSelectorGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 
-	// Agent banca
-	private AgentAnalysesSelector agentBanca;
+	// AgentAnalysesSelector
+	private AgentAnalysesSelector agentAnalysesSelector;
 
-	// Handle pentru operatiile cu fisiere
-	private FileAdministrator adminFisier;
-
-	// Regex pentru CNP
-	private String regexCNP = "^[1-9]\\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])(0[1-9]|[1-4]\\d|5[0-2]|99)(00[1-9]|0[1-9]\\d|[1-9]\\d\\d)\\d$";
+	// File handle
+	private FileAdministrator adminFile;
 
 	private JFrame frmDataSelector;
-	private JTextField txtSelectTheInterval;
 	private JTextField txtGravityBetween;
 	private JTextField txtPhBetween;
 	private JTextField txtOsmolarityBetween;
@@ -44,17 +44,11 @@ public class AnalysesSelectorGUI extends JFrame {
 	private JTextField txtCalciumBetween;
 	private JTextField txtMinimumGravity;
 	private JTextField txtMaximumGravity;
-	private JTextField txtAnd;
 	private JTextField txtMinimumPH;
 	private JTextField txtMinimumOsmo;
 	private JTextField txtMinimumCond;
 	private JTextField txtMinimumUrea;
 	private JTextField txtMinimumCalcium;
-	private JTextField txtAnd2;
-	private JTextField txtAnd3;
-	private JTextField txtAnd4;
-	private JTextField txtAnd5;
-	private JTextField txtAnd6;
 	private JTextField txtMaximumPH;
 	private JTextField txtMaximumOsmo;
 	private JTextField txtMaximumCond;
@@ -65,13 +59,14 @@ public class AnalysesSelectorGUI extends JFrame {
 	private JCheckBox chckbxCond;
 	private JCheckBox chckbxUrea;
 	private JCheckBox chckbxCalcium;
+	private JLabel lblNewLabel;
 
 	/**
 	 * Create the application.
 	 */
-	public AnalysesSelectorGUI(AgentAnalysesSelector aB) {
-		super(aB.getLocalName());
-		agentBanca = aB;
+	public AnalysesSelectorGUI(AgentAnalysesSelector aAS) {
+		super(aAS.getLocalName());
+		agentAnalysesSelector = aAS;
 		initialize();
 	}
 
@@ -83,17 +78,6 @@ public class AnalysesSelectorGUI extends JFrame {
 		frmDataSelector.setTitle("Analysis Data Selector");
 		frmDataSelector.getContentPane().setBackground(Color.DARK_GRAY);
 		frmDataSelector.getContentPane().setLayout(null);
-		
-		txtSelectTheInterval = new JTextField();
-		txtSelectTheInterval.setEditable(false);
-		txtSelectTheInterval.setEnabled(false);
-		txtSelectTheInterval.setBackground(SystemColor.desktop);
-		txtSelectTheInterval.setForeground(SystemColor.activeCaptionBorder);
-		txtSelectTheInterval.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		txtSelectTheInterval.setText("Select the urine analyses with these intervals for the parameters: ");
-		txtSelectTheInterval.setBounds(10, 10, 463, 25);
-		frmDataSelector.getContentPane().add(txtSelectTheInterval);
-		txtSelectTheInterval.setColumns(10);
 		
 		txtGravityBetween = new JTextField();
 		txtGravityBetween.setBackground(SystemColor.desktop);
@@ -162,35 +146,67 @@ public class AnalysesSelectorGUI extends JFrame {
 		frmDataSelector.getContentPane().add(txtCalciumBetween);
 		
 		txtMinimumGravity = new JTextField();
+		txtMinimumGravity.setEnabled(false);
+		txtMinimumGravity.setEditable(false);
+		txtMinimumGravity.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if (txtMinimumGravity.getText().toLowerCase().contains("minimum")) {
+					txtMinimumGravity.setText("");
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (txtMinimumGravity.getText().isEmpty()) {
+					txtMinimumGravity.setText("minimum");
+				}
+			}
+		});
 		txtMinimumGravity.setText("minimum");
 		txtMinimumGravity.setBackground(SystemColor.desktop);
 		txtMinimumGravity.setForeground(SystemColor.activeCaptionBorder);
 		txtMinimumGravity.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		txtMinimumGravity.setBounds(179, 65, 67, 22);
+		txtMinimumGravity.setBounds(200, 65, 67, 22);
 		frmDataSelector.getContentPane().add(txtMinimumGravity);
 		txtMinimumGravity.setColumns(10);
 		
 		txtMaximumGravity = new JTextField();
+		txtMaximumGravity.setEnabled(false);
+		txtMaximumGravity.setEditable(false);
+		txtMaximumGravity.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if (txtMaximumGravity.getText().toLowerCase().contains("maximum")) {
+					txtMaximumGravity.setText("");
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (txtMaximumGravity.getText().isEmpty()) {
+					txtMaximumGravity.setText("maximum");
+				}
+			}
+		});
 		txtMaximumGravity.setText("maximum");
 		txtMaximumGravity.setForeground(SystemColor.activeCaptionBorder);
 		txtMaximumGravity.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtMaximumGravity.setColumns(10);
 		txtMaximumGravity.setBackground(SystemColor.desktop);
-		txtMaximumGravity.setBounds(332, 65, 67, 22);
+		txtMaximumGravity.setBounds(316, 65, 67, 22);
 		frmDataSelector.getContentPane().add(txtMaximumGravity);
 		
-		txtAnd = new JTextField();
-		txtAnd.setEditable(false);
-		txtAnd.setEnabled(false);
-		txtAnd.setText("and");
-		txtAnd.setForeground(SystemColor.activeCaptionBorder);
-		txtAnd.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		txtAnd.setColumns(10);
-		txtAnd.setBackground(SystemColor.desktop);
-		txtAnd.setBounds(274, 65, 31, 22);
-		frmDataSelector.getContentPane().add(txtAnd);
-		
 		JCheckBox chckbxGravity = new JCheckBox("ALL");
+		chckbxGravity.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent evt) {
+				boolean chckbxSelected = chckbxGravity.isSelected();
+				txtMinimumGravity.setEnabled(!chckbxSelected);
+				txtMinimumGravity.setEditable(!chckbxSelected);
+				txtMaximumGravity.setEnabled(!chckbxSelected);
+				txtMaximumGravity.setEditable(!chckbxSelected);
+			}
+		});
 		chckbxGravity.setSelected(true);
 		chckbxGravity.setForeground(SystemColor.activeCaptionBorder);
 		chckbxGravity.setBackground(SystemColor.desktop);
@@ -198,151 +214,275 @@ public class AnalysesSelectorGUI extends JFrame {
 		frmDataSelector.getContentPane().add(chckbxGravity);
 		
 		txtMinimumPH = new JTextField();
+		txtMinimumPH.setEnabled(false);
+		txtMinimumPH.setEditable(false);
+		txtMinimumPH.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if (txtMinimumPH.getText().toLowerCase().contains("minimum")) {
+					txtMinimumPH.setText("");
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (txtMinimumPH.getText().isEmpty()) {
+					txtMinimumPH.setText("minimum");
+				}
+			}
+		});
 		txtMinimumPH.setText("minimum");
 		txtMinimumPH.setForeground(SystemColor.activeCaptionBorder);
 		txtMinimumPH.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtMinimumPH.setColumns(10);
 		txtMinimumPH.setBackground(SystemColor.desktop);
-		txtMinimumPH.setBounds(179, 97, 67, 22);
+		txtMinimumPH.setBounds(200, 97, 67, 22);
 		frmDataSelector.getContentPane().add(txtMinimumPH);
 		
 		txtMinimumOsmo = new JTextField();
+		txtMinimumOsmo.setEnabled(false);
+		txtMinimumOsmo.setEditable(false);
+		txtMinimumOsmo.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if (txtMinimumOsmo.getText().toLowerCase().contains("minimum")) {
+					txtMinimumOsmo.setText("");
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (txtMinimumOsmo.getText().isEmpty()) {
+					txtMinimumOsmo.setText("minimum");
+				}
+			}
+		});
 		txtMinimumOsmo.setText("minimum");
 		txtMinimumOsmo.setForeground(SystemColor.activeCaptionBorder);
 		txtMinimumOsmo.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtMinimumOsmo.setColumns(10);
 		txtMinimumOsmo.setBackground(SystemColor.desktop);
-		txtMinimumOsmo.setBounds(179, 129, 67, 22);
+		txtMinimumOsmo.setBounds(200, 129, 67, 22);
 		frmDataSelector.getContentPane().add(txtMinimumOsmo);
 		
 		txtMinimumCond = new JTextField();
+		txtMinimumCond.setEnabled(false);
+		txtMinimumCond.setEditable(false);
+		txtMinimumCond.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if (txtMinimumCond.getText().toLowerCase().contains("minimum")) {
+					txtMinimumCond.setText("");
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (txtMinimumCond.getText().isEmpty()) {
+					txtMinimumCond.setText("minimum");
+				}
+			}
+		});
 		txtMinimumCond.setText("minimum");
 		txtMinimumCond.setForeground(SystemColor.activeCaptionBorder);
 		txtMinimumCond.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtMinimumCond.setColumns(10);
 		txtMinimumCond.setBackground(SystemColor.desktop);
-		txtMinimumCond.setBounds(179, 161, 67, 22);
+		txtMinimumCond.setBounds(200, 161, 67, 22);
 		frmDataSelector.getContentPane().add(txtMinimumCond);
 		
 		txtMinimumUrea = new JTextField();
+		txtMinimumUrea.setEnabled(false);
+		txtMinimumUrea.setEditable(false);
+		txtMinimumUrea.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if (txtMinimumUrea.getText().toLowerCase().contains("minimum")) {
+					txtMinimumUrea.setText("");
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (txtMinimumUrea.getText().isEmpty()) {
+					txtMinimumUrea.setText("minimum");
+				}
+			}
+		});
 		txtMinimumUrea.setText("minimum");
 		txtMinimumUrea.setForeground(SystemColor.activeCaptionBorder);
 		txtMinimumUrea.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtMinimumUrea.setColumns(10);
 		txtMinimumUrea.setBackground(SystemColor.desktop);
-		txtMinimumUrea.setBounds(179, 195, 67, 22);
+		txtMinimumUrea.setBounds(200, 195, 67, 22);
 		frmDataSelector.getContentPane().add(txtMinimumUrea);
 		
 		txtMinimumCalcium = new JTextField();
+		txtMinimumCalcium.setEditable(false);
+		txtMinimumCalcium.setEnabled(false);
+		txtMinimumCalcium.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if (txtMinimumCalcium.getText().toLowerCase().contains("minimum")) {
+					txtMinimumCalcium.setText("");
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (txtMinimumCalcium.getText().isEmpty()) {
+					txtMinimumCalcium.setText("minimum");
+				}
+			}
+		});
 		txtMinimumCalcium.setText("minimum");
 		txtMinimumCalcium.setForeground(SystemColor.activeCaptionBorder);
 		txtMinimumCalcium.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtMinimumCalcium.setColumns(10);
 		txtMinimumCalcium.setBackground(SystemColor.desktop);
-		txtMinimumCalcium.setBounds(179, 227, 67, 22);
+		txtMinimumCalcium.setBounds(200, 227, 67, 22);
 		frmDataSelector.getContentPane().add(txtMinimumCalcium);
 		
-		txtAnd2 = new JTextField();
-		txtAnd2.setText("and");
-		txtAnd2.setForeground(SystemColor.activeCaptionBorder);
-		txtAnd2.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		txtAnd2.setEnabled(false);
-		txtAnd2.setEditable(false);
-		txtAnd2.setColumns(10);
-		txtAnd2.setBackground(SystemColor.desktop);
-		txtAnd2.setBounds(274, 97, 31, 22);
-		frmDataSelector.getContentPane().add(txtAnd2);
-		
-		txtAnd3 = new JTextField();
-		txtAnd3.setText("and");
-		txtAnd3.setForeground(SystemColor.activeCaptionBorder);
-		txtAnd3.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		txtAnd3.setEnabled(false);
-		txtAnd3.setEditable(false);
-		txtAnd3.setColumns(10);
-		txtAnd3.setBackground(SystemColor.desktop);
-		txtAnd3.setBounds(274, 129, 31, 22);
-		frmDataSelector.getContentPane().add(txtAnd3);
-		
-		txtAnd4 = new JTextField();
-		txtAnd4.setText("and");
-		txtAnd4.setForeground(SystemColor.activeCaptionBorder);
-		txtAnd4.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		txtAnd4.setEnabled(false);
-		txtAnd4.setEditable(false);
-		txtAnd4.setColumns(10);
-		txtAnd4.setBackground(SystemColor.desktop);
-		txtAnd4.setBounds(274, 161, 31, 22);
-		frmDataSelector.getContentPane().add(txtAnd4);
-		
-		txtAnd5 = new JTextField();
-		txtAnd5.setText("and");
-		txtAnd5.setForeground(SystemColor.activeCaptionBorder);
-		txtAnd5.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		txtAnd5.setEnabled(false);
-		txtAnd5.setEditable(false);
-		txtAnd5.setColumns(10);
-		txtAnd5.setBackground(SystemColor.desktop);
-		txtAnd5.setBounds(274, 195, 31, 22);
-		frmDataSelector.getContentPane().add(txtAnd5);
-		
-		txtAnd6 = new JTextField();
-		txtAnd6.setText("and");
-		txtAnd6.setForeground(SystemColor.activeCaptionBorder);
-		txtAnd6.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		txtAnd6.setEnabled(false);
-		txtAnd6.setEditable(false);
-		txtAnd6.setColumns(10);
-		txtAnd6.setBackground(SystemColor.desktop);
-		txtAnd6.setBounds(274, 227, 31, 22);
-		frmDataSelector.getContentPane().add(txtAnd6);
-		
 		txtMaximumPH = new JTextField();
+		txtMaximumPH.setEnabled(false);
+		txtMaximumPH.setEditable(false);
+		txtMaximumPH.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if (txtMaximumPH.getText().toLowerCase().contains("maximum")) {
+					txtMaximumPH.setText("");
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (txtMaximumPH.getText().isEmpty()) {
+					txtMaximumPH.setText("maximum");
+				}
+			}
+		});
 		txtMaximumPH.setText("maximum");
 		txtMaximumPH.setForeground(SystemColor.activeCaptionBorder);
 		txtMaximumPH.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtMaximumPH.setColumns(10);
 		txtMaximumPH.setBackground(SystemColor.desktop);
-		txtMaximumPH.setBounds(332, 97, 67, 22);
+		txtMaximumPH.setBounds(316, 97, 67, 22);
 		frmDataSelector.getContentPane().add(txtMaximumPH);
 		
 		txtMaximumOsmo = new JTextField();
+		txtMaximumOsmo.setEnabled(false);
+		txtMaximumOsmo.setEditable(false);
+		txtMaximumOsmo.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if (txtMaximumOsmo.getText().toLowerCase().contains("maximum")) {
+					txtMaximumOsmo.setText("");
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (txtMaximumOsmo.getText().isEmpty()) {
+					txtMaximumOsmo.setText("maximum");
+				}
+			}
+		});
 		txtMaximumOsmo.setText("maximum");
 		txtMaximumOsmo.setForeground(SystemColor.activeCaptionBorder);
 		txtMaximumOsmo.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtMaximumOsmo.setColumns(10);
 		txtMaximumOsmo.setBackground(SystemColor.desktop);
-		txtMaximumOsmo.setBounds(332, 129, 67, 22);
+		txtMaximumOsmo.setBounds(316, 129, 67, 22);
 		frmDataSelector.getContentPane().add(txtMaximumOsmo);
 		
 		txtMaximumCond = new JTextField();
+		txtMaximumCond.setEnabled(false);
+		txtMaximumCond.setEditable(false);
+		txtMaximumCond.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if (txtMaximumCond.getText().toLowerCase().contains("maximum")) {
+					txtMaximumCond.setText("");
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (txtMaximumCond.getText().isEmpty()) {
+					txtMaximumCond.setText("maximum");
+				}
+			}
+		});
 		txtMaximumCond.setText("maximum");
 		txtMaximumCond.setForeground(SystemColor.activeCaptionBorder);
 		txtMaximumCond.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtMaximumCond.setColumns(10);
 		txtMaximumCond.setBackground(SystemColor.desktop);
-		txtMaximumCond.setBounds(332, 161, 67, 22);
+		txtMaximumCond.setBounds(316, 161, 67, 22);
 		frmDataSelector.getContentPane().add(txtMaximumCond);
 		
 		txtMaximumUrea = new JTextField();
+		txtMaximumUrea.setEnabled(false);
+		txtMaximumUrea.setEditable(false);
+		txtMaximumUrea.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if (txtMaximumUrea.getText().toLowerCase().contains("maximum")) {
+					txtMaximumUrea.setText("");
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (txtMaximumUrea.getText().isEmpty()) {
+					txtMaximumUrea.setText("maximum");
+				}
+			}
+		});
 		txtMaximumUrea.setText("maximum");
 		txtMaximumUrea.setForeground(SystemColor.activeCaptionBorder);
 		txtMaximumUrea.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtMaximumUrea.setColumns(10);
 		txtMaximumUrea.setBackground(SystemColor.desktop);
-		txtMaximumUrea.setBounds(332, 193, 67, 22);
+		txtMaximumUrea.setBounds(316, 195, 67, 22);
 		frmDataSelector.getContentPane().add(txtMaximumUrea);
 		
 		txtMaximumCalcium = new JTextField();
+		txtMaximumCalcium.setEnabled(false);
+		txtMaximumCalcium.setEditable(false);
+		txtMaximumCalcium.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				if (txtMaximumCalcium.getText().toLowerCase().contains("maximum")) {
+					txtMaximumCalcium.setText("");
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (txtMaximumCalcium.getText().isEmpty()) {
+					txtMaximumCalcium.setText("maximum");
+				}
+			}
+		});
 		txtMaximumCalcium.setText("maximum");
 		txtMaximumCalcium.setForeground(SystemColor.activeCaptionBorder);
 		txtMaximumCalcium.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtMaximumCalcium.setColumns(10);
 		txtMaximumCalcium.setBackground(SystemColor.desktop);
-		txtMaximumCalcium.setBounds(332, 227, 67, 22);
+		txtMaximumCalcium.setBounds(316, 227, 67, 22);
 		frmDataSelector.getContentPane().add(txtMaximumCalcium);
 		
 		chckbxPH = new JCheckBox("ALL");
+		chckbxPH.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent evt) {
+				boolean chckbxSelected = chckbxPH.isSelected();
+				txtMinimumPH.setEnabled(!chckbxSelected);
+				txtMinimumPH.setEditable(!chckbxSelected);
+				txtMaximumPH.setEnabled(!chckbxSelected);
+				txtMaximumPH.setEditable(!chckbxSelected);
+			}
+		});
 		chckbxPH.setSelected(true);
 		chckbxPH.setForeground(SystemColor.activeCaptionBorder);
 		chckbxPH.setBackground(SystemColor.desktop);
@@ -350,6 +490,15 @@ public class AnalysesSelectorGUI extends JFrame {
 		frmDataSelector.getContentPane().add(chckbxPH);
 		
 		chckbxOsmo = new JCheckBox("ALL");
+		chckbxOsmo.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent evt) {
+				boolean chckbxSelected = chckbxOsmo.isSelected();
+				txtMinimumOsmo.setEnabled(!chckbxSelected);
+				txtMinimumOsmo.setEditable(!chckbxSelected);
+				txtMaximumOsmo.setEnabled(!chckbxSelected);
+				txtMaximumOsmo.setEditable(!chckbxSelected);
+			}
+		});
 		chckbxOsmo.setSelected(true);
 		chckbxOsmo.setForeground(SystemColor.activeCaptionBorder);
 		chckbxOsmo.setBackground(SystemColor.desktop);
@@ -357,6 +506,15 @@ public class AnalysesSelectorGUI extends JFrame {
 		frmDataSelector.getContentPane().add(chckbxOsmo);
 		
 		chckbxCond = new JCheckBox("ALL");
+		chckbxCond.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent evt) {
+				boolean chckbxSelected = chckbxCond.isSelected();
+				txtMinimumCond.setEnabled(!chckbxSelected);
+				txtMinimumCond.setEditable(!chckbxSelected);
+				txtMaximumCond.setEnabled(!chckbxSelected);
+				txtMaximumCond.setEditable(!chckbxSelected);
+			}
+		});
 		chckbxCond.setSelected(true);
 		chckbxCond.setForeground(SystemColor.activeCaptionBorder);
 		chckbxCond.setBackground(SystemColor.desktop);
@@ -364,6 +522,15 @@ public class AnalysesSelectorGUI extends JFrame {
 		frmDataSelector.getContentPane().add(chckbxCond);
 		
 		chckbxUrea = new JCheckBox("ALL");
+		chckbxUrea.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent evt) {
+				boolean chckbxSelected = chckbxUrea.isSelected();
+				txtMinimumUrea.setEnabled(!chckbxSelected);
+				txtMinimumUrea.setEditable(!chckbxSelected);
+				txtMaximumUrea.setEnabled(!chckbxSelected);
+				txtMaximumUrea.setEditable(!chckbxSelected);
+			}
+		});
 		chckbxUrea.setSelected(true);
 		chckbxUrea.setForeground(SystemColor.activeCaptionBorder);
 		chckbxUrea.setBackground(SystemColor.desktop);
@@ -371,6 +538,15 @@ public class AnalysesSelectorGUI extends JFrame {
 		frmDataSelector.getContentPane().add(chckbxUrea);
 		
 		chckbxCalcium = new JCheckBox("ALL");
+		chckbxCalcium.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent evt) {
+				boolean chckbxSelected = chckbxCalcium.isSelected();
+				txtMinimumCalcium.setEnabled(!chckbxSelected);
+				txtMinimumCalcium.setEditable(!chckbxSelected);
+				txtMaximumCalcium.setEnabled(!chckbxSelected);
+				txtMaximumCalcium.setEditable(!chckbxSelected);
+			}
+		});
 		chckbxCalcium.setSelected(true);
 		chckbxCalcium.setForeground(SystemColor.activeCaptionBorder);
 		chckbxCalcium.setBackground(SystemColor.desktop);
@@ -381,24 +557,30 @@ public class AnalysesSelectorGUI extends JFrame {
 		btnSelect.setBackground(SystemColor.desktop);
 		btnSelect.setForeground(SystemColor.activeCaptionBorder);
 		btnSelect.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		btnSelect.setBounds(10, 274, 463, 25);
+		btnSelect.setBounds(10, 284, 463, 25);
 		frmDataSelector.getContentPane().add(btnSelect);
+		
+		lblNewLabel = new JLabel("Select the urine analyses with these intervals for the parameters: ");
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblNewLabel.setForeground(SystemColor.desktop);
+		lblNewLabel.setBounds(10, 10, 464, 25);
+		frmDataSelector.getContentPane().add(lblNewLabel);
 
-		// Inchide agentul la inchiderea interfetei
-		// din butonul din dreapta sus
+		// Close the agent interface
 		frmDataSelector.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
-				agentBanca.doDelete();
+				agentAnalysesSelector.doDelete();
 			}
 		});
-		frmDataSelector.setBounds(100, 100, 498, 344);
+		frmDataSelector.setBounds(100, 100, 498, 357);
 		frmDataSelector.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		setResizable(false);
 	}
 
-	public void afiseazaInterfata() {
+	public void showInterface() {
 		frmDataSelector.setVisible(true);
 	}
+
 }

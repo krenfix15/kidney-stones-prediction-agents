@@ -22,17 +22,16 @@ public class AgentAnalysesSelector extends Agent {
 
 	private FileAdministrator adminFisier = new FileAdministrator();
 
-	private AnalysesSelectorGUI interfata;
+	private AnalysesSelectorGUI agentInterface;
 
 	@Override
 	protected void setup() {
-		// Crearea si afisarea interfetei
-		interfata = new AnalysesSelectorGUI(this);
-		interfata.afiseazaInterfata();
+		agentInterface = new AnalysesSelectorGUI(this);
+		agentInterface.showInterface();
 
-		System.out.println("Agentul pentru banca din " + getAID().getName() + " este pregãtit.\n");
+		System.out.println("The analyses selector agent " + getAID().getName() + " is ready.\n");
 
-		// Inregistrare agent in DF
+		// Register in DF
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
 
@@ -52,21 +51,20 @@ public class AgentAnalysesSelector extends Agent {
 		addBehaviour(new ServiciuTranzactie());
 	}
 
-	// Stergerea agentului banca
+	// Delete the agent
 	@Override
 	protected void takeDown() {
-		// Deinregistrare
+		// Unregister from DF
 		try {
 			DFService.deregister(this);
 		} catch (FIPAException fe) {
 			fe.printStackTrace();
 		}
-		// Inchidere interfata
-		interfata.dispose();
+		// Close the interface
+		agentInterface.dispose();
 
 		doDelete();
 
-		// Printarea mesajului de inchidere
 		System.out.println("Agentul " + getAID().getName() + " se închide.\n");
 	}
 
@@ -92,13 +90,12 @@ public class AgentAnalysesSelector extends Agent {
 					e.printStackTrace();
 				}
 
-				Integer soldVechiClient = Integer.valueOf(client.getSold());
+				Integer soldVechiClient = 1; //Integer.valueOf(client.getSold());
 
 				if (soldVechiClient != null) {
 					reply.setPerformative(ACLMessage.PROPOSE);
 					reply.setContent("Sold curent: " + soldVechiClient.toString());
 				} else {
-					// CNP ul n a fost gasit in baza de date.
 					reply.setPerformative(ACLMessage.REFUSE);
 					reply.setContent("not-available");
 				}
@@ -108,7 +105,7 @@ public class AgentAnalysesSelector extends Agent {
 				block();
 			}
 		}
-	} // Sfarsitul clasei ServiciuSold
+	} 
 
 	private class ServiciuTranzactie extends CyclicBehaviour {
 		private static final long serialVersionUID = 1L;
@@ -142,11 +139,11 @@ public class AgentAnalysesSelector extends Agent {
 					e.printStackTrace();
 				}
 
-				Integer soldVechiClient = Integer.valueOf(client.getSold());
+				Integer soldVechiClient = 1; //Integer.valueOf(client.getSold());
 
 				if (soldVechiClient != null && operatie.equals("adaugare")) {
 					soldNou = soldVechiClient + suma;
-					client.setSold(soldNou.toString());
+					//client.setSold(soldNou.toString());
 
 					System.out.println("Adãugare " + suma + " LEI în cont. Sold cont: " + soldNou + " LEI");
 
@@ -154,7 +151,7 @@ public class AgentAnalysesSelector extends Agent {
 					reply.setContent("Sold actualizat: " + String.valueOf(soldNou) + "\n");
 				} else if (soldVechiClient != null && operatie.equals("extragere") && (soldVechiClient > suma)) {
 					soldNou = soldVechiClient - suma;
-					client.setSold(soldNou.toString());
+					//client.setSold(soldNou.toString());
 
 					System.out.println("Extragere " + suma + " LEI din cont. Sold cont: " + soldNou + " LEI");
 
@@ -167,15 +164,15 @@ public class AgentAnalysesSelector extends Agent {
 					reply.setContent("not-possible");
 				}
 
-				if (client != null && !client.getCNP().equals("")) {
-					adminFisier.UpdateClient(client);
-				}
+				//if (client != null && !client.getCNP().equals("")) {
+					//adminFisier.UpdateClient(client);
+				//}
 
 				myAgent.send(reply);
 			} else {
 				block();
 			}
 		}
-	} // Sfarsitul clasei ServiciuTranzactie
+	}
 
 }

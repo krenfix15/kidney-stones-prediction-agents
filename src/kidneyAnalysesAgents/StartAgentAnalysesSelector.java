@@ -13,7 +13,7 @@ public class StartAgentAnalysesSelector {
 		String host = "localhost"; // JADE Book Trading environment Main Container host
 		String port = "1099"; // JADE Dataset environment Main Container port
 
-		String agentName = "AnalysesDataSet"; // The name of the agent
+		String agentName = "AnalysesSelector"; // The name of the agent
 
 		// Instance of the runtime env
 		Runtime runtime = Runtime.instance();
@@ -29,7 +29,7 @@ public class StartAgentAnalysesSelector {
 		if (cc != null) {
 			// Creating an agent for the analyses dataset
 			try {
-				AgentController ac = cc.createNewAgent(agentName, "kidneyAnalysesAgents.AnalysesDataSet", null);
+				AgentController ac = cc.createNewAgent(agentName, "kidneyAnalysesAgents.AgentAnalysesSelector", null);
 				ac.start();
 
 			} catch (Exception e) {

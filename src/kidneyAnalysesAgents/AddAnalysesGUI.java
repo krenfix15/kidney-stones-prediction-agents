@@ -42,7 +42,7 @@ public class AddAnalysesGUI extends JFrame {
 		frmnAdaugareAnalize = new JFrame();
 		frmnAdaugareAnalize.setTitle("AdaugareAnalize");
 		frmnAdaugareAnalize.getContentPane().setBackground(Color.DARK_GRAY);
-		frmnAdaugareAnalize.setBounds(100, 100, 172, 373);
+		frmnAdaugareAnalize.setBounds(100, 100, 172, 353);
 		frmnAdaugareAnalize.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmnAdaugareAnalize.getContentPane().setLayout(null);
 
@@ -199,10 +199,10 @@ public class AddAnalysesGUI extends JFrame {
 		cbKidneyStones.setBounds(10, 210, 137, 22);
 		cbKidneyStones.addItem("Present");
 		cbKidneyStones.addItem("Not Present");
-		cbKidneyStones.addItem("Unknown yet");
 		frmnAdaugareAnalize.getContentPane().add(cbKidneyStones);
 
 		JLabel lblKidneyStonesPresence = new JLabel("Kidney stones presence");
+		lblKidneyStonesPresence.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblKidneyStonesPresence.setForeground(new Color(192, 192, 192));
 		lblKidneyStonesPresence.setBounds(10, 195, 137, 14);
 		frmnAdaugareAnalize.getContentPane().add(lblKidneyStonesPresence);
@@ -211,7 +211,7 @@ public class AddAnalysesGUI extends JFrame {
 		btnInregistrare.setForeground(Color.WHITE);
 		btnInregistrare.setBackground(Color.BLACK);
 		btnInregistrare.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnInregistrare.setBounds(10, 299, 137, 27);
+		btnInregistrare.setBounds(10, 279, 137, 27);
 		frmnAdaugareAnalize.getContentPane().add(btnInregistrare);
 
 		btnInregistrare.addActionListener(new ActionListener() {
