@@ -6,7 +6,7 @@ import jade.core.Runtime;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 
-public class StartAgentAnalysesDataSet {
+public class StartAgentAnalysesSelector {
 
 	public static void main(String[] args) {
 

@@ -11,7 +11,7 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
-public class AgentAnalysesDataSet extends Agent {
+public class AgentAnalysesSelector extends Agent {
 
 	/**
 	 * 
@@ -22,12 +22,12 @@ public class AgentAnalysesDataSet extends Agent {
 
 	private FileAdministrator adminFisier = new FileAdministrator();
 
-	private AnalysesDataSetGUI interfata;
+	private AnalysesSelectorGUI interfata;
 
 	@Override
 	protected void setup() {
 		// Crearea si afisarea interfetei
-		interfata = new AnalysesDataSetGUI(this);
+		interfata = new AnalysesSelectorGUI(this);
 		interfata.afiseazaInterfata();
 
 		System.out.println("Agentul pentru banca din " + getAID().getName() + " este pregãtit.\n");
