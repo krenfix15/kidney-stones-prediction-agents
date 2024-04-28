@@ -28,7 +28,7 @@ public class FileAdministrator {
 		}
 	}
 
-	public void AddNewAnalyses(Analysis a) {
+	public void AddNewAnalysis(Analysis a) {
 		try {
 			FileWriter myWriter = new FileWriter(fileNameString, true);
 			myWriter.write(a.convertStringForFile());

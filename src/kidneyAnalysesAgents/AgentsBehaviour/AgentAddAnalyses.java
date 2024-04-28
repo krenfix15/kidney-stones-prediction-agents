@@ -2,8 +2,14 @@ package kidneyAnalysesAgents.AgentsBehaviour;
 
 import java.io.IOException;
 
+import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.OneShotBehaviour;
+import jade.domain.DFService;
+import jade.domain.FIPAException;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.lang.acl.ACLMessage;
 import kidneyAnalysesAgents.AgentsGUI.AgentAddAnalysesGUI;
 import kidneyAnalysesAgents.Helpers.Analysis;
 import kidneyAnalysesAgents.Helpers.FileAdministrator;
@@ -14,13 +20,13 @@ public class AgentAddAnalyses extends Agent {
 	// Interfata pentru inregistrare
 	private AgentAddAnalysesGUI interfaceAddAnalyses;
 
-	private Analysis newAnalyses;
+	private Analysis newAnalysis;
 
-	private FileAdministrator fileAdmin;
-
+	private AID[] agentsAnalysesManagers;
+	
 	@Override
 	protected void setup() {
-		newAnalyses = new Analysis();
+		newAnalysis = new Analysis();
 
 		// Creation
 		interfaceAddAnalyses = new AgentAddAnalysesGUI(this);
@@ -43,32 +49,50 @@ public class AgentAddAnalyses extends Agent {
 
 	// Invoked by interface when adding new analysis sample
 	public void AddNewUrineAnalyses(final String gravity, final String pH, final String osmo,
-			final String conductivity, final String urea, final String calcium, final String target) {
+			final String conductivity, final String urea, final String calcium, final String kidneyStonesPresence) {
 		addBehaviour(new OneShotBehaviour() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void action() {
-				newAnalyses.setGravityString(gravity);
-				newAnalyses.setPhString(pH);
-				newAnalyses.setOsmoString(osmo);
-				newAnalyses.setConductivityString(conductivity);
-				newAnalyses.setUreaString(urea);
-				newAnalyses.setCalciumString(calcium);
-				newAnalyses.setkidneyStonesPresenceString(target);
+				newAnalysis.setGravityString(gravity);
+				newAnalysis.setPhString(pH);
+				newAnalysis.setOsmoString(osmo);
+				newAnalysis.setConductivityString(conductivity);
+				newAnalysis.setUreaString(urea);
+				newAnalysis.setCalciumString(calcium);
+				newAnalysis.setkidneyStonesPresenceString(kidneyStonesPresence);
+
+				DFAgentDescription template = new DFAgentDescription();
+				ServiceDescription sd = new ServiceDescription();
+				sd.setType("manager");
+
+				template.addServices(sd);
 
 				try {
-					fileAdmin = new FileAdministrator("urineAnalyses.csv");
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					DFAgentDescription[] result = DFService.search(myAgent, template);
+					System.out.println("Found the next analyses agent");
+					agentsAnalysesManagers = new AID[result.length];
+
+					for (int i = 0; i < result.length; ++i) {
+						agentsAnalysesManagers[i] = result[i].getName();
+						System.out.println(agentsAnalysesManagers[i].getName());
+					}
+
+				} catch (FIPAException fe) {
+					fe.printStackTrace();
 				}
+				
+				ACLMessage message = new ACLMessage(ACLMessage.INFORM);
+	            for (AID agent : agentsAnalysesManagers) {
+	                message.addReceiver(agent);
+	            }
+	            message.setContent(newAnalysis.toString());
 
-				fileAdmin.AddNewAnalyses(newAnalyses);
-
-				System.out.println("The analyses were successfully added!\n");
+	            // Send the message
+	            myAgent.send(message);
+	            System.out.println("Message sent with the new analysis to analyses manager: " + newAnalysis.toString());
 			}
 		});
 	}
-
 }

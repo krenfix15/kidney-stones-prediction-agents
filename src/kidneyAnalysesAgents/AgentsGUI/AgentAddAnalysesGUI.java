@@ -219,15 +219,20 @@ public class AgentAddAnalysesGUI extends JFrame {
 		btnInregistrare.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (txtGravity.getText().matches("[a-zA-Z]+") && !txtGravity.getText().equals("Nume")
-						&& txtPh.getText().matches("[a-zA-Z]+") && !txtPh.getText().equals("Prenume")
-						&& txtOsmo.getText().matches(
-								"^[1-9]\\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])(0[1-9]|[1-4]\\d|5[0-2]|99)(00[1-9]|0[1-9]\\d|[1-9]\\d\\d)\\d$")
-						&& txtCond.getText().matches("[1-9][0-9]*")) {
-					agentAddAnalyses.AddNewUrineAnalyses(txtGravity.getText(), txtPh.getText(), txtOsmo.getText(),
-							txtCond.getText(), txtUreaConcentration.getText(), txtCalciumConcentration.getText(),
-							(String) cbKidneyStones.getSelectedItem());
-
+				if (txtGravity.getText().matches("[+-]?(\\d*\\.\\d+|\\d+\\.\\d*|\\d+)")) {
+					if(((String) cbKidneyStones.getSelectedItem()) == "Present") {
+						// Start the one shot behaviour to add new analysis
+						agentAddAnalyses.AddNewUrineAnalyses(txtGravity.getText(), txtPh.getText(), txtOsmo.getText(),
+								txtCond.getText(), txtUreaConcentration.getText(), txtCalciumConcentration.getText(),
+								"1");
+					}
+					else {
+						// Start the one shot behaviour to add new analysis
+						agentAddAnalyses.AddNewUrineAnalyses(txtGravity.getText(), txtPh.getText(), txtOsmo.getText(),
+								txtCond.getText(), txtUreaConcentration.getText(), txtCalciumConcentration.getText(),
+								"0");
+					}
+						
 					setTextImplicitControale();
 					setCuloareImplicitControale(Color.LIGHT_GRAY);
 				} else {
@@ -241,10 +246,10 @@ public class AgentAddAnalysesGUI extends JFrame {
 
 	// Setarea textului implicit al textboxurilor
 	private void setTextImplicitControale() {
-		txtGravity.setText("Nume");
-		txtPh.setText("Prenume");
-		txtOsmo.setText("CNP");
-		txtCond.setText("SOLD [LEI]");
+		txtGravity.setText("Gravity");
+		txtPh.setText("pH");
+		txtOsmo.setText("Osmolarity");
+		txtCond.setText("Conductivity");
 	}
 
 	// Setarea culorii implicite a textului din textboxuri

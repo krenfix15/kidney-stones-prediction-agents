@@ -61,7 +61,7 @@ public class AgentPredict extends Agent {
 					e1.printStackTrace();
 				}
 
-				fileAdmin.AddNewAnalyses(newAnalyses);
+				fileAdmin.AddNewAnalysis(newAnalyses);
 
 				System.out.println("The analyses were successfully added!\n");
 			}
