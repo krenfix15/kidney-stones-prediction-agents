@@ -1,4 +1,4 @@
-package kidneyAnalysesAgents;
+package kidneyAnalysesAgents.Helpers;
 
 public class Analyses {
 	private String gravityString;

@@ -1,4 +1,4 @@
-package kidneyAnalysesAgents;
+package kidneyAnalysesAgents.AgentsGUI;
 
 import java.awt.Color;
 import java.awt.event.WindowAdapter;
@@ -8,6 +8,10 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import kidneyAnalysesAgents.AgentsBehaviour.AgentAnalysesSelector;
+import kidneyAnalysesAgents.Helpers.FileAdministrator;
+
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.SystemColor;

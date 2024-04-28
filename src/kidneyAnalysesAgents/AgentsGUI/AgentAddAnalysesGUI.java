@@ -1,4 +1,4 @@
-package kidneyAnalysesAgents;
+package kidneyAnalysesAgents.AgentsGUI;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -15,13 +15,15 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-public class AgentPredictGUI extends JFrame {
+import kidneyAnalysesAgents.AgentsBehaviour.AgentAddAnalyses;
+
+public class AgentAddAnalysesGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	private AgentPredict agentPredict;
+	private AgentAddAnalyses agentAddAnalyses;
 
-	private JFrame frmPredict;
+	private JFrame frmAddAnalyses;
 
 	private JTextField txtGravity;
 	private JTextField txtPh;
@@ -29,29 +31,28 @@ public class AgentPredictGUI extends JFrame {
 	private JTextField txtCond;
 	private JTextField txtUreaConcentration;
 	private JTextField txtCalciumConcentration;
-	private JTextField txtKidneyStonesPresence;
 
 	// Creaza aplicatia agentului de adaugare analize
-	public AgentPredictGUI(AgentPredict aPredict) {
-		super(aPredict.getLocalName());
-		agentPredict = aPredict;
+	public AgentAddAnalysesGUI(AgentAddAnalyses aAddAnalyses) {
+		super(aAddAnalyses.getLocalName());
+		agentAddAnalyses = aAddAnalyses;
 		initialize();
 	}
 
 	// Initializeaza continutul interfetei
 	private void initialize() {
-		frmPredict = new JFrame();
-		frmPredict.setTitle("Predict");
-		frmPredict.getContentPane().setBackground(Color.DARK_GRAY);
-		frmPredict.setBounds(100, 100, 252, 353);
-		frmPredict.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frmPredict.getContentPane().setLayout(null);
+		frmAddAnalyses = new JFrame();
+		frmAddAnalyses.setTitle("Add analyses");
+		frmAddAnalyses.getContentPane().setBackground(Color.DARK_GRAY);
+		frmAddAnalyses.setBounds(100, 100, 172, 353);
+		frmAddAnalyses.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmAddAnalyses.getContentPane().setLayout(null);
 
 		// Inchide agentul la inchiderea interfetei
-		frmPredict.addWindowListener(new WindowAdapter() {
+		frmAddAnalyses.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
-				agentPredict.doDelete();
+				agentAddAnalyses.doDelete();
 			}
 		});
 
@@ -74,9 +75,9 @@ public class AgentPredictGUI extends JFrame {
 		txtGravity.setBackground(Color.BLACK);
 		txtGravity.setForeground(Color.LIGHT_GRAY);
 		txtGravity.setText("Gravity");
-		txtGravity.setBounds(10, 11, 218, 20);
+		txtGravity.setBounds(10, 11, 137, 20);
 		txtGravity.setColumns(10);
-		frmPredict.getContentPane().add(txtGravity);
+		frmAddAnalyses.getContentPane().add(txtGravity);
 
 		txtPh = new JTextField();
 		txtPh.addKeyListener(new KeyAdapter() {
@@ -98,8 +99,8 @@ public class AgentPredictGUI extends JFrame {
 		txtPh.setForeground(Color.LIGHT_GRAY);
 		txtPh.setColumns(10);
 		txtPh.setBackground(Color.BLACK);
-		txtPh.setBounds(10, 42, 218, 20);
-		frmPredict.getContentPane().add(txtPh);
+		txtPh.setBounds(10, 42, 137, 20);
+		frmAddAnalyses.getContentPane().add(txtPh);
 
 		txtOsmo = new JTextField();
 		txtOsmo.addKeyListener(new KeyAdapter() {
@@ -121,8 +122,8 @@ public class AgentPredictGUI extends JFrame {
 		txtOsmo.setForeground(Color.LIGHT_GRAY);
 		txtOsmo.setColumns(10);
 		txtOsmo.setBackground(Color.BLACK);
-		txtOsmo.setBounds(10, 73, 218, 20);
-		frmPredict.getContentPane().add(txtOsmo);
+		txtOsmo.setBounds(10, 73, 137, 20);
+		frmAddAnalyses.getContentPane().add(txtOsmo);
 
 		txtCond = new JTextField();
 		txtCond.addKeyListener(new KeyAdapter() {
@@ -144,8 +145,8 @@ public class AgentPredictGUI extends JFrame {
 		txtCond.setForeground(Color.LIGHT_GRAY);
 		txtCond.setColumns(10);
 		txtCond.setBackground(Color.BLACK);
-		txtCond.setBounds(10, 104, 218, 20);
-		frmPredict.getContentPane().add(txtCond);
+		txtCond.setBounds(10, 104, 137, 20);
+		frmAddAnalyses.getContentPane().add(txtCond);
 
 		txtUreaConcentration = new JTextField();
 		txtUreaConcentration.addKeyListener(new KeyAdapter() {
@@ -167,8 +168,8 @@ public class AgentPredictGUI extends JFrame {
 		txtUreaConcentration.setForeground(Color.LIGHT_GRAY);
 		txtUreaConcentration.setColumns(10);
 		txtUreaConcentration.setBackground(Color.BLACK);
-		txtUreaConcentration.setBounds(10, 135, 218, 20);
-		frmPredict.getContentPane().add(txtUreaConcentration);
+		txtUreaConcentration.setBounds(10, 135, 137, 20);
+		frmAddAnalyses.getContentPane().add(txtUreaConcentration);
 
 		txtCalciumConcentration = new JTextField();
 		txtCalciumConcentration.addKeyListener(new KeyAdapter() {
@@ -190,28 +191,32 @@ public class AgentPredictGUI extends JFrame {
 		txtCalciumConcentration.setForeground(Color.LIGHT_GRAY);
 		txtCalciumConcentration.setColumns(10);
 		txtCalciumConcentration.setBackground(Color.BLACK);
-		txtCalciumConcentration.setBounds(10, 166, 218, 20);
-		frmPredict.getContentPane().add(txtCalciumConcentration);
+		txtCalciumConcentration.setBounds(10, 166, 137, 20);
+		frmAddAnalyses.getContentPane().add(txtCalciumConcentration);
 
-		JButton btnPredict = new JButton("Predict");
-		btnPredict.setForeground(Color.WHITE);
-		btnPredict.setBackground(Color.BLACK);
-		btnPredict.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnPredict.setBounds(10, 196, 218, 27);
-		frmPredict.getContentPane().add(btnPredict);
-		
-		txtKidneyStonesPresence = new JTextField();
-		txtKidneyStonesPresence.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		txtKidneyStonesPresence.setEditable(false);
-		txtKidneyStonesPresence.setEnabled(false);
-		txtKidneyStonesPresence.setText("Predicted kidney stones presence chance");
-		txtKidneyStonesPresence.setForeground(Color.LIGHT_GRAY);
-		txtKidneyStonesPresence.setColumns(10);
-		txtKidneyStonesPresence.setBackground(Color.BLACK);
-		txtKidneyStonesPresence.setBounds(10, 248, 218, 58);
-		frmPredict.getContentPane().add(txtKidneyStonesPresence);
+		JComboBox<String> cbKidneyStones = new JComboBox<String>();
+		cbKidneyStones.setToolTipText("");
+		cbKidneyStones.setForeground(new Color(192, 192, 192));
+		cbKidneyStones.setBackground(new Color(0, 0, 0));
+		cbKidneyStones.setBounds(10, 210, 137, 22);
+		cbKidneyStones.addItem("Present");
+		cbKidneyStones.addItem("Not Present");
+		frmAddAnalyses.getContentPane().add(cbKidneyStones);
 
-		btnPredict.addActionListener(new ActionListener() {
+		JLabel lblKidneyStonesPresence = new JLabel("Kidney stones presence");
+		lblKidneyStonesPresence.setFont(new Font("Tahoma", Font.BOLD, 10));
+		lblKidneyStonesPresence.setForeground(new Color(192, 192, 192));
+		lblKidneyStonesPresence.setBounds(10, 195, 137, 14);
+		frmAddAnalyses.getContentPane().add(lblKidneyStonesPresence);
+
+		JButton btnInregistrare = new JButton("Add analyses");
+		btnInregistrare.setForeground(Color.WHITE);
+		btnInregistrare.setBackground(Color.BLACK);
+		btnInregistrare.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnInregistrare.setBounds(10, 279, 137, 27);
+		frmAddAnalyses.getContentPane().add(btnInregistrare);
+
+		btnInregistrare.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (txtGravity.getText().matches("[a-zA-Z]+") && !txtGravity.getText().equals("Nume")
@@ -219,8 +224,9 @@ public class AgentPredictGUI extends JFrame {
 						&& txtOsmo.getText().matches(
 								"^[1-9]\\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])(0[1-9]|[1-4]\\d|5[0-2]|99)(00[1-9]|0[1-9]\\d|[1-9]\\d\\d)\\d$")
 						&& txtCond.getText().matches("[1-9][0-9]*")) {
-					agentPredict.AddNewUrineAnalyses(txtGravity.getText(), txtPh.getText(), txtOsmo.getText(),
-							txtCond.getText(), txtUreaConcentration.getText(), txtCalciumConcentration.getText());
+					agentAddAnalyses.AddNewUrineAnalyses(txtGravity.getText(), txtPh.getText(), txtOsmo.getText(),
+							txtCond.getText(), txtUreaConcentration.getText(), txtCalciumConcentration.getText(),
+							(String) cbKidneyStones.getSelectedItem());
 
 					setTextImplicitControale();
 					setCuloareImplicitControale(Color.LIGHT_GRAY);
@@ -235,10 +241,10 @@ public class AgentPredictGUI extends JFrame {
 
 	// Setarea textului implicit al textboxurilor
 	private void setTextImplicitControale() {
-		txtGravity.setText("Gravity");
-		txtPh.setText("pH");
-		txtOsmo.setText("Osmolarity");
-		txtCond.setText("Conductivity");
+		txtGravity.setText("Nume");
+		txtPh.setText("Prenume");
+		txtOsmo.setText("CNP");
+		txtCond.setText("SOLD [LEI]");
 	}
 
 	// Setarea culorii implicite a textului din textboxuri
@@ -250,6 +256,6 @@ public class AgentPredictGUI extends JFrame {
 	}
 
 	public void showInterface() {
-		frmPredict.setVisible(true);
+		frmAddAnalyses.setVisible(true);
 	}
 }

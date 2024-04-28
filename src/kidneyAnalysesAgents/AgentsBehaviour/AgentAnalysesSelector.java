@@ -1,4 +1,4 @@
-package kidneyAnalysesAgents;
+package kidneyAnalysesAgents.AgentsBehaviour;
 
 import java.io.IOException;
 
@@ -10,8 +10,11 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import kidneyAnalysesAgents.AgentsGUI.AgentAnalysesSelectorGUI;
+import kidneyAnalysesAgents.Helpers.Analyses;
+import kidneyAnalysesAgents.Helpers.FileAdministrator;
 
-public class AgentAnalysesManager extends Agent {
+public class AgentAnalysesSelector extends Agent {
 
 	/**
 	 * 
@@ -22,22 +25,22 @@ public class AgentAnalysesManager extends Agent {
 
 	private FileAdministrator adminFisier = new FileAdministrator();
 
-	private AgentAnalysesManagerGUI agentInterface;
+	private AgentAnalysesSelectorGUI agentInterface;
 
 	@Override
 	protected void setup() {
-		agentInterface = new AgentAnalysesManagerGUI(this);
+		agentInterface = new AgentAnalysesSelectorGUI(this);
 		agentInterface.showInterface();
 
-		System.out.println("The analyses manager agent " + getAID().getName() + " is ready.\n");
+		System.out.println("The analyses selector agent " + getAID().getName() + " is ready.\n");
 
 		// Register in DF
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
 
 		ServiceDescription sd = new ServiceDescription();
-		sd.setType("manager");
-		sd.setName("JADE-Manager");
+		sd.setType("selector");
+		sd.setName("JADE-Selector");
 
 		dfd.addServices(sd);
 		try {
