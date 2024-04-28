@@ -1,2 +1,4 @@
 eclipse.preferences.version=1
-encoding//src/kidneyAnalysesAgents/AddAnalysesGUI.java=UTF-8
+encoding//src/kidneyAnalysesAgents/AgentAddAnalysesGUI.java=UTF-8
+encoding//src/kidneyAnalysesAgents/AgentAnalysesManagerGUI.java=UTF-8
+encoding//src/kidneyAnalysesAgents/AgentPredictGUI.java=UTF-8
