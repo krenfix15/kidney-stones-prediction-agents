@@ -1,32 +1,21 @@
 package kidneyAnalysesAgents;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
-import java.util.ArrayList;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
-import javax.swing.JTextPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.JLabel;
 import java.awt.Font;
-import javax.swing.JTextArea;
 import java.awt.SystemColor;
 import javax.swing.JCheckBox;
-import javax.swing.Box;
-import javax.swing.JPanel;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class AnalysesSelectorGUI extends JFrame {
+public class AgentAnalysesSelectorGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	// AgentAnalysesSelector
@@ -64,7 +53,7 @@ public class AnalysesSelectorGUI extends JFrame {
 	/**
 	 * Create the application.
 	 */
-	public AnalysesSelectorGUI(AgentAnalysesSelector aAS) {
+	public AgentAnalysesSelectorGUI(AgentAnalysesSelector aAS) {
 		super(aAS.getLocalName());
 		agentAnalysesSelector = aAS;
 		initialize();
@@ -556,7 +545,7 @@ public class AnalysesSelectorGUI extends JFrame {
 		JButton btnSelect = new JButton("Select");
 		btnSelect.setBackground(SystemColor.desktop);
 		btnSelect.setForeground(SystemColor.activeCaptionBorder);
-		btnSelect.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		btnSelect.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		btnSelect.setBounds(10, 284, 463, 25);
 		frmDataSelector.getContentPane().add(btnSelect);
 		

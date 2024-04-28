@@ -5,11 +5,10 @@ import java.io.IOException;
 import jade.core.Agent;
 import jade.core.behaviours.OneShotBehaviour;
 
-public class AgentAddAnalyses extends Agent {
+public class AgentPredict extends Agent {
 	private static final long serialVersionUID = 1L;
 
-	// Interfata pentru inregistrare
-	private AgentAddAnalysesGUI interfaceAddAnalyses;
+	private AgentPredictGUI interfacePredict;
 
 	private Analyses newAnalyses;
 
@@ -19,9 +18,8 @@ public class AgentAddAnalyses extends Agent {
 	protected void setup() {
 		newAnalyses = new Analyses();
 
-		// Creation
-		interfaceAddAnalyses = new AgentAddAnalysesGUI(this);
-		interfaceAddAnalyses.showInterface();
+		interfacePredict = new AgentPredictGUI(this);
+		interfacePredict.showInterface();
 
 		System.out.println("\nThe agent " + getAID().getName() + " is ready.\n");
 	}
@@ -29,18 +27,18 @@ public class AgentAddAnalyses extends Agent {
 	// Delete the agent that adds the analyses
 	@Override
 	protected void takeDown() {
-		// Closing interface
-		interfaceAddAnalyses.dispose();
+		// Close interface
+		interfacePredict.dispose();
 
 		doDelete();
 
-		// Closing message
+		// Print closing message
 		System.out.println("The agent " + getAID().getName() + " is closing.\n");
 	}
 
-	// Invoked by interface when adding new analysis sample
+	// Invocata de interfata atunci cand se inregistreaza un nou client
 	public void AddNewUrineAnalyses(final String gravity, final String pH, final String osmo,
-			final String conductivity, final String urea, final String calcium, final String target) {
+			final String conductivity, final String urea, final String calcium) {
 		addBehaviour(new OneShotBehaviour() {
 			private static final long serialVersionUID = 1L;
 
@@ -52,7 +50,6 @@ public class AgentAddAnalyses extends Agent {
 				newAnalyses.setConductivityString(conductivity);
 				newAnalyses.setUreaString(urea);
 				newAnalyses.setCalciumString(calcium);
-				newAnalyses.setTargetString(target);
 
 				try {
 					fileAdmin = new FileAdministrator("urineAnalyses.csv");
