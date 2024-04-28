@@ -5,7 +5,7 @@ import java.io.IOException;
 import jade.core.Agent;
 import jade.core.behaviours.OneShotBehaviour;
 import kidneyAnalysesAgents.AgentsGUI.AgentPredictGUI;
-import kidneyAnalysesAgents.Helpers.Analyses;
+import kidneyAnalysesAgents.Helpers.Analysis;
 import kidneyAnalysesAgents.Helpers.FileAdministrator;
 
 public class AgentPredict extends Agent {
@@ -13,13 +13,13 @@ public class AgentPredict extends Agent {
 
 	private AgentPredictGUI interfacePredict;
 
-	private Analyses newAnalyses;
+	private Analysis newAnalyses;
 
 	private FileAdministrator fileAdmin;
 
 	@Override
 	protected void setup() {
-		newAnalyses = new Analyses();
+		newAnalyses = new Analysis();
 
 		interfacePredict = new AgentPredictGUI(this);
 		interfacePredict.showInterface();

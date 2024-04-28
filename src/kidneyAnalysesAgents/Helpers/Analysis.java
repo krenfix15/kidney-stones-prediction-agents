@@ -1,27 +1,27 @@
 package kidneyAnalysesAgents.Helpers;
 
-public class Analyses {
+public class Analysis {
 	private String gravityString;
 	private String phString;
 	private String osmoString;
 	private String conductivityString;
 	private String ureaString;
 	private String calciumString;
-	private String targetString;
+	private String kidneyStonesPresence;
 
-	public String PARAMETER_SEPARATOR = ",";
+	private String PARAMETER_SEPARATOR = ",";
 
-	public Analyses() {
+	public Analysis() {
 		setGravityString("");
 		setPhString("");
 		setOsmoString("");
 		setConductivityString("");
 		setUreaString("");
 		setCalciumString("");
-		setTargetString("");
+		setkidneyStonesPresenceString("");
 	}
 
-	public Analyses(String FileLine) {
+	public Analysis(String FileLine) {
 		String[] fileData = FileLine.split(PARAMETER_SEPARATOR);
 		setGravityString(fileData[0]);
 		setPhString(fileData[1]);
@@ -29,7 +29,7 @@ public class Analyses {
 		setConductivityString(fileData[3]);
 		setUreaString(fileData[4]);
 		setCalciumString(fileData[5]);
-		setTargetString(fileData[6]);
+		setkidneyStonesPresenceString(fileData[6]);
 	}
 
 	public String getGravityString() {
@@ -80,12 +80,12 @@ public class Analyses {
 		this.calciumString = calciumString;
 	}
 
-	public String getTargetString() {
-		return targetString;
+	public String getkidneyStonesPresenceString() {
+		return kidneyStonesPresence;
 	}
 
-	public void setTargetString(String targetString) {
-		this.targetString = targetString;
+	public void setkidneyStonesPresenceString(String targetString) {
+		this.kidneyStonesPresence = targetString;
 	}
 
 	public String getSeparator() {
@@ -93,8 +93,8 @@ public class Analyses {
 	}
 
 	public String convertStringForFile() {
-		String s = String.format("%2$s%1$s%3$s%1$s%4$s%1$s%5$s%1$s%6$s%1$s%7$s%1$s\n", PARAMETER_SEPARATOR,
-				gravityString, phString, osmoString, conductivityString, ureaString, calciumString, targetString);
+		String s = String.format("%2$s%1$s%3$s%1$s%4$s%1$s%5$s%1$s%6$s%1$s%7$s%1$s%8$s\n", PARAMETER_SEPARATOR,
+				gravityString, phString, osmoString, conductivityString, ureaString, calciumString, kidneyStonesPresence);
 		return s;
 	}
 

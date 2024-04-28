@@ -11,7 +11,7 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import kidneyAnalysesAgents.AgentsGUI.AgentAnalysesSelectorGUI;
-import kidneyAnalysesAgents.Helpers.Analyses;
+import kidneyAnalysesAgents.Helpers.Analysis;
 import kidneyAnalysesAgents.Helpers.FileAdministrator;
 
 public class AgentAnalysesSelector extends Agent {
@@ -21,7 +21,7 @@ public class AgentAnalysesSelector extends Agent {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public Analyses analyses;
+	public Analysis analyses;
 
 	private FileAdministrator adminFisier = new FileAdministrator();
 
@@ -86,12 +86,6 @@ public class AgentAnalysesSelector extends Agent {
 
 				ACLMessage reply = msg.createReply();
 
-				try {
-					analyses = adminFisier.GetClient(mesaj);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 
 				Integer soldVechiClient = 1; //Integer.valueOf(client.getSold());
 
@@ -135,12 +129,6 @@ public class AgentAnalysesSelector extends Agent {
 
 				Integer soldNou;
 
-				try {
-					analyses = adminFisier.GetClient(cnp);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 
 				Integer soldVechiClient = 1; //Integer.valueOf(client.getSold());
 

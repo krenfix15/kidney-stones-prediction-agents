@@ -5,7 +5,7 @@ import java.io.IOException;
 import jade.core.Agent;
 import jade.core.behaviours.OneShotBehaviour;
 import kidneyAnalysesAgents.AgentsGUI.AgentAddAnalysesGUI;
-import kidneyAnalysesAgents.Helpers.Analyses;
+import kidneyAnalysesAgents.Helpers.Analysis;
 import kidneyAnalysesAgents.Helpers.FileAdministrator;
 
 public class AgentAddAnalyses extends Agent {
@@ -14,13 +14,13 @@ public class AgentAddAnalyses extends Agent {
 	// Interfata pentru inregistrare
 	private AgentAddAnalysesGUI interfaceAddAnalyses;
 
-	private Analyses newAnalyses;
+	private Analysis newAnalyses;
 
 	private FileAdministrator fileAdmin;
 
 	@Override
 	protected void setup() {
-		newAnalyses = new Analyses();
+		newAnalyses = new Analysis();
 
 		// Creation
 		interfaceAddAnalyses = new AgentAddAnalysesGUI(this);
@@ -55,7 +55,7 @@ public class AgentAddAnalyses extends Agent {
 				newAnalyses.setConductivityString(conductivity);
 				newAnalyses.setUreaString(urea);
 				newAnalyses.setCalciumString(calcium);
-				newAnalyses.setTargetString(target);
+				newAnalyses.setkidneyStonesPresenceString(target);
 
 				try {
 					fileAdmin = new FileAdministrator("urineAnalyses.csv");

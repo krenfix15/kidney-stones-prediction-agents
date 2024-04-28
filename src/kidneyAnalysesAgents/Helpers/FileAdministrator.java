@@ -28,7 +28,7 @@ public class FileAdministrator {
 		}
 	}
 
-	public void AddNewAnalyses(Analyses a) {
+	public void AddNewAnalyses(Analysis a) {
 		try {
 			FileWriter myWriter = new FileWriter(fileNameString, true);
 			myWriter.write(a.convertStringForFile());
@@ -40,16 +40,17 @@ public class FileAdministrator {
 		}
 	}
 
-	public ArrayList<Analyses> GetAllAnalyses() {
-		ArrayList<Analyses> analysesList = new ArrayList<Analyses>();
+	public ArrayList<Analysis> GetAllAnalyses() {
+		ArrayList<Analysis> analysesList = new ArrayList<Analysis>();
 
-		try {
-			BufferedReader myReader = new BufferedReader(new FileReader(fileNameString));
+		try (BufferedReader myReader = new BufferedReader(new FileReader(fileNameString))) {
 			String lineString;
 
 			try {
+				// Skip header line
+				myReader.readLine();
 				while ((lineString = myReader.readLine()) != null) {
-					Analyses c = new Analyses(lineString);
+					Analysis c = new Analysis(lineString);
 					analysesList.add(c);
 				}
 			} catch (IOException e) {
@@ -59,43 +60,11 @@ public class FileAdministrator {
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-
-		return analysesList;
-	}
-
-	public Analyses GetClient(String cnp) throws IOException {
-		try {
-			@SuppressWarnings("resource")
-			BufferedReader myReader = new BufferedReader(new FileReader(fileNameString));
-			String lineString;
-
-			while ((lineString = myReader.readLine()) != null) {
-				Analyses c = new Analyses(lineString);
-				// if (c.getCNP().equals(cnp)) {
-				// return c;
-				// }
-			}
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		return null;
+		return analysesList;
 	}
-
-	/*
-	 * public Boolean UpdateClient(Analyses clientActualizat) { Boolean
-	 * actualizareCuSucces = false; try { ArrayList<Analyses> clienti =
-	 * GetAllAnalyses(); FileWriter myWriter = new FileWriter(fileNameString);
-	 * 
-	 * for (Analyses client : clienti) { if
-	 * (!client.getCNP().equals(clientActualizat.getCNP())) {
-	 * myWriter.write(client.ConversieLaSirPentruFisier()); } else {
-	 * myWriter.write(clientActualizat.ConversieLaSirPentruFisier()); }
-	 * 
-	 * } myWriter.close(); actualizareCuSucces = true; } catch (IOException e) { //
-	 * TODO Auto-generated catch block e.printStackTrace(); } return
-	 * actualizareCuSucces; }
-	 */
 }

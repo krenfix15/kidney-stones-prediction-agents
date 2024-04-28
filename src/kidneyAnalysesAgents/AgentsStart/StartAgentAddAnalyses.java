@@ -27,7 +27,7 @@ public class StartAgentAddAnalyses {
 		if (cc != null) {
 			// Creation of the agent
 			try {
-				AgentController ac = cc.createNewAgent(agentName, "kidneyAnalysesAgents.AgentAddAnalyses", null);
+				AgentController ac = cc.createNewAgent(agentName, "kidneyAnalysesAgents.AgentsBehaviour.AgentAddAnalyses", null);
 				ac.start();
 
 			} catch (Exception e) {

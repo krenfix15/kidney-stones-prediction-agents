@@ -1,31 +1,35 @@
 package kidneyAnalysesAgents.AgentsGUI;
 
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.util.ArrayList;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 
 import kidneyAnalysesAgents.AgentsBehaviour.AgentAnalysesManager;
+import kidneyAnalysesAgents.Helpers.Analysis;
+import kidneyAnalysesAgents.Helpers.FileAdministrator;
 
 import javax.swing.JTable;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import javax.swing.JScrollPane;
 
 public class AgentAnalysesManagerGUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-
+	
+	private String columns[] = {"gravity","ph","osmolarity","conductivity","urea","calcium","kidneystonespresence"};
+	
+	private FileAdministrator fileAdmin;
+	
 	private AgentAnalysesManager agentAnalysesManager;
 
 	private JFrame frmAnalysesManager;
+	private DefaultTableModel tableModel;
 	private JTable table;
 
 	// Creaza aplicatia agentului de adaugare analize
@@ -40,15 +44,24 @@ public class AgentAnalysesManagerGUI extends JFrame {
 		frmAnalysesManager = new JFrame();
 		frmAnalysesManager.setTitle("Analyses Manager");
 		frmAnalysesManager.getContentPane().setBackground(Color.DARK_GRAY);
-		frmAnalysesManager.setBounds(100, 100, 475, 353);
+		frmAnalysesManager.setBounds(100, 100, 827, 427);
 		frmAnalysesManager.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmAnalysesManager.getContentPane().setLayout(null);
 		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 10, 793, 370);
+		frmAnalysesManager.getContentPane().add(scrollPane);
+		
 		table = new JTable();
-		table.setBounds(10, 10, 441, 296);
-		frmAnalysesManager.getContentPane().add(table);
+		scrollPane.setViewportView(table);
+		table.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+					updateAnalysesTable();
+				}
+		});
 
-		// Inchide agentul la inchiderea interfetei
+		// Close the agent
 		frmAnalysesManager.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
@@ -61,5 +74,25 @@ public class AgentAnalysesManagerGUI extends JFrame {
 
 	public void showInterface() {
 		frmAnalysesManager.setVisible(true);
+	}
+	
+	public void updateAnalysesTable() {
+		tableModel = new DefaultTableModel(columns, 0);
+		
+		try {
+			fileAdmin = new FileAdministrator("urineAnalyses.csv");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		ArrayList<Analysis> analyses = fileAdmin.GetAllAnalyses();
+
+		for (Analysis a : analyses) {
+				String[] params = a.toString().split(a.getSeparator());
+				tableModel.addRow(params);
+		}
+		
+		table.setModel(tableModel);
 	}
 }
