@@ -1,4 +1,4 @@
-package kidneyAnalysesAgents.AgentsBehaviour;
+package main.kidneyAnalysesAgents.AgentsBehaviour;
 
 import jade.core.AID;
 import jade.core.Agent;
@@ -8,8 +8,8 @@ import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
-import kidneyAnalysesAgents.AgentsGUI.AgentAddAnalysesGUI;
-import kidneyAnalysesAgents.Helpers.Analysis;
+import main.kidneyAnalysesAgents.AgentsGUI.AgentAddAnalysesGUI;
+import main.kidneyAnalysesAgents.Helpers.Analysis;
 
 public class AgentAddAnalyses extends Agent {
 	private static final long serialVersionUID = 1L;

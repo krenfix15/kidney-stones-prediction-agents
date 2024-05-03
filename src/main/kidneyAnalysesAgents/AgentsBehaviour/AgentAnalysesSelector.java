@@ -1,4 +1,4 @@
-package kidneyAnalysesAgents.AgentsBehaviour;
+package main.kidneyAnalysesAgents.AgentsBehaviour;
 
 import java.util.ArrayList;
 
@@ -10,9 +10,9 @@ import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
-import kidneyAnalysesAgents.AgentsGUI.AgentAnalysesSelectorGUI;
-import kidneyAnalysesAgents.Helpers.Analysis;
-import kidneyAnalysesAgents.Helpers.FileAdministrator;
+import main.kidneyAnalysesAgents.AgentsGUI.AgentAnalysesSelectorGUI;
+import main.kidneyAnalysesAgents.Helpers.Analysis;
+import main.kidneyAnalysesAgents.Helpers.FileAdministrator;
 
 public class AgentAnalysesSelector extends Agent {
 	private static final long serialVersionUID = 1L;
@@ -23,7 +23,7 @@ public class AgentAnalysesSelector extends Agent {
 
 	private FileAdministrator fileAdmin = new FileAdministrator();
 
-	private String selectedAnalysesFilename = "selectedUrineAnalyses.csv";
+	private String selectedAnalysesFilename = "src\\main\\resources\\selectedUrineAnalyses.csv";
 
 	private AID[] agentsAnalysesManagers;
 

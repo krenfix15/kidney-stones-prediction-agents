@@ -1,4 +1,4 @@
-package kidneyAnalysesAgents.AgentsStart;
+package main.kidneyAnalysesAgents.AgentsStart;
 
 import jade.core.Profile;
 import jade.core.ProfileImpl;
@@ -6,14 +6,14 @@ import jade.core.Runtime;
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 
-public class StartAgentAnalysesSelector {
+public class StartAgentPredict {
 
 	public static void main(String[] args) {
 
 		String host = "localhost"; // JADE environment Main Container host
 		String port = "1099"; // JADE environment Main Container port
 
-		String agentName = "AnalysesSelector";
+		String agentName = "KidneyStonesPredictor";
 
 		// Instance of the runtime env
 		Runtime runtime = Runtime.instance();
@@ -29,7 +29,8 @@ public class StartAgentAnalysesSelector {
 		if (cc != null) {
 			// Creation of the agent
 			try {
-				AgentController ac = cc.createNewAgent(agentName, "kidneyAnalysesAgents.AgentsBehaviour.AgentAnalysesSelector", null);
+				AgentController ac = cc.createNewAgent(agentName,
+						"main.kidneyAnalysesAgents.AgentsBehaviour.AgentPredict", null);
 				ac.start();
 
 			} catch (Exception e) {

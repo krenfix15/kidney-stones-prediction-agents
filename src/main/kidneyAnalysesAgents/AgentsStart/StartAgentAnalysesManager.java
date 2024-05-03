@@ -1,4 +1,4 @@
-package kidneyAnalysesAgents.AgentsStart;
+package main.kidneyAnalysesAgents.AgentsStart;
 
 import jade.core.Profile;
 import jade.core.ProfileImpl;
@@ -29,7 +29,8 @@ public class StartAgentAnalysesManager {
 		if (cc != null) {
 			// Creating an agent for the analyses management
 			try {
-				AgentController ac = cc.createNewAgent(agentName, "kidneyAnalysesAgents.AgentsBehaviour.AgentAnalysesManager", null);
+				AgentController ac = cc.createNewAgent(agentName,
+						"main.kidneyAnalysesAgents.AgentsBehaviour.AgentAnalysesManager", null);
 				ac.start();
 
 			} catch (Exception e) {
