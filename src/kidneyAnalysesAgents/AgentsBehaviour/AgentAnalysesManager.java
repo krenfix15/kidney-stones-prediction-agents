@@ -1,7 +1,5 @@
 package kidneyAnalysesAgents.AgentsBehaviour;
 
-import java.io.IOException;
-
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.domain.DFService;
@@ -20,7 +18,7 @@ public class AgentAnalysesManager extends Agent {
 
 	public Analysis analyses;
 
-	private FileAdministrator adminFisier = new FileAdministrator();
+	private FileAdministrator fileAdmin = new FileAdministrator();
 
 	private AgentAnalysesManagerGUI agentInterface;
 
@@ -46,9 +44,9 @@ public class AgentAnalysesManager extends Agent {
 			fe.printStackTrace();
 		}
 
-		addBehaviour(new ServiciuSold());
+		addBehaviour(new AddAnalysesService());
 
-		addBehaviour(new ServiciuTranzactie());
+		addBehaviour(new SelectAnalysesService());
 	}
 
 	// Delete the agent
@@ -68,40 +66,50 @@ public class AgentAnalysesManager extends Agent {
 		System.out.println("The agent " + getAID().getName() + " is closing.\n");
 	}
 
-	private class ServiciuSold extends CyclicBehaviour {
+	private class AddAnalysesService extends CyclicBehaviour {
 		private static final long serialVersionUID = 1L;
 
 		@Override
 		public void action() {
-			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.CFP);
+			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.PROPAGATE);
 
 			ACLMessage msg = myAgent.receive(mt);
 
 			if (msg != null) {
-				// CFP Message received. Process it
-				String mesaj = msg.getContent();
+				// Message received
+				String message = msg.getContent();
 
 				ACLMessage reply = msg.createReply();
 
-
-				Integer soldVechiClient = 1; //Integer.valueOf(client.getSold());
-
-				if (soldVechiClient != null) {
-					reply.setPerformative(ACLMessage.PROPOSE);
-					reply.setContent("Sold curent: " + soldVechiClient.toString());
+				if (message != null && !message.isEmpty()) {
+					// Content is not empty, try to create Analysis object
+					try {
+						Analysis newAnalysis = new Analysis(message);
+						// Successfully created Analysis object
+						reply.setPerformative(ACLMessage.CONFIRM);
+						reply.setContent("I added the new analysis.");
+						fileAdmin.AddNewAnalysis(newAnalysis);
+					} catch (IllegalArgumentException e) {
+						// Failed to create Analysis object (invalid content)
+						reply.setPerformative(ACLMessage.FAILURE);
+						reply.setContent("Invalid analysis data.");
+					}
 				} else {
-					reply.setPerformative(ACLMessage.REFUSE);
-					reply.setContent("not-available");
+					// No content or empty content
+					reply.setPerformative(ACLMessage.FAILURE);
+					reply.setContent("No analysis data provided.");
 				}
 
+				// Send reply
 				myAgent.send(reply);
 			} else {
+				// No message received, block
 				block();
 			}
 		}
-	} 
+	}
 
-	private class ServiciuTranzactie extends CyclicBehaviour {
+	private class SelectAnalysesService extends CyclicBehaviour {
 		private static final long serialVersionUID = 1L;
 
 		@Override
@@ -126,12 +134,11 @@ public class AgentAnalysesManager extends Agent {
 
 				Integer soldNou;
 
-
-				Integer soldVechiClient = 1; //Integer.valueOf(client.getSold());
+				Integer soldVechiClient = 1; // Integer.valueOf(client.getSold());
 
 				if (soldVechiClient != null && operatie.equals("adaugare")) {
 					soldNou = soldVechiClient + suma;
-					//client.setSold(soldNou.toString());
+					// client.setSold(soldNou.toString());
 
 					System.out.println("Adãugare " + suma + " LEI în cont. Sold cont: " + soldNou + " LEI");
 
@@ -139,7 +146,7 @@ public class AgentAnalysesManager extends Agent {
 					reply.setContent("Sold actualizat: " + String.valueOf(soldNou) + "\n");
 				} else if (soldVechiClient != null && operatie.equals("extragere") && (soldVechiClient > suma)) {
 					soldNou = soldVechiClient - suma;
-					//client.setSold(soldNou.toString());
+					// client.setSold(soldNou.toString());
 
 					System.out.println("Extragere " + suma + " LEI din cont. Sold cont: " + soldNou + " LEI");
 
@@ -152,9 +159,9 @@ public class AgentAnalysesManager extends Agent {
 					reply.setContent("not-possible");
 				}
 
-				//if (client != null && !client.getCNP().equals("")) {
-					//adminFisier.UpdateClient(client);
-				//}
+				// if (client != null && !client.getCNP().equals("")) {
+				// adminFisier.UpdateClient(client);
+				// }
 
 				myAgent.send(reply);
 			} else {

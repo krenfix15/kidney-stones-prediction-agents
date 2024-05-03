@@ -93,8 +93,10 @@ public class Analysis {
 	}
 
 	public String convertStringForFile() {
+		// No newline character included in the format
 		String s = String.format("%2$s%1$s%3$s%1$s%4$s%1$s%5$s%1$s%6$s%1$s%7$s%1$s%8$s\n", PARAMETER_SEPARATOR,
-				gravityString, phString, osmoString, conductivityString, ureaString, calciumString, kidneyStonesPresence);
+				gravityString, phString, osmoString, conductivityString, ureaString, calciumString,
+				kidneyStonesPresence);
 		return s;
 	}
 
