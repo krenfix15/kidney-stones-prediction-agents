@@ -104,6 +104,34 @@ public class FileAdministrator {
 		return analysesList;
 	}
 
+	public ArrayList<Analysis> GetSelectedAnalyses() {
+		ArrayList<Analysis> analysesList = new ArrayList<Analysis>();
+
+		try (BufferedReader myReader = new BufferedReader(new FileReader(fileNameString))) {
+			String lineString;
+
+			try {
+				// Skip header line
+				myReader.readLine();
+				while ((lineString = myReader.readLine()) != null) {
+					Analysis c = new Analysis(lineString);
+					analysesList.add(c);
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return analysesList;
+	}
+
 	public ArrayList<Analysis> selectUrineAnalyses(Double gravity_min, Double gravity_max, Double pH_min, Double pH_max,
 			Double osmo_min, Double osmo_max, Double conductivity_min, Double conductivity_max, Double urea_min,
 			Double urea_max, Double calcium_min, Double calcium_max) {
