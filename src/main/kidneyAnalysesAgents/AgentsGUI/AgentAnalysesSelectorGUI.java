@@ -1,4 +1,4 @@
-package kidneyAnalysesAgents.AgentsGUI;
+package main.kidneyAnalysesAgents.AgentsGUI;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -18,7 +18,7 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import kidneyAnalysesAgents.AgentsBehaviour.AgentAnalysesSelector;
+import main.kidneyAnalysesAgents.AgentsBehaviour.AgentAnalysesSelector;
 
 public class AgentAnalysesSelectorGUI extends JFrame {
 	private static final long serialVersionUID = 1L;

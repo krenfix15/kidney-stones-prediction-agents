@@ -1,4 +1,4 @@
-package kidneyAnalysesAgents.Helpers;
+package main.kidneyAnalysesAgents.Helpers;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -13,7 +13,7 @@ public class FileAdministrator {
 	private String fileNameString;
 
 	public FileAdministrator() {
-		fileNameString = "urineAnalyses.csv";
+		fileNameString = "src\\main\\resources\\urineAnalyses.csv";
 	}
 
 	public FileAdministrator(String fileName) throws IOException {
@@ -34,7 +34,7 @@ public class FileAdministrator {
 			FileWriter myWriter = new FileWriter(fileNameString, true);
 			myWriter.write(a.convertStringForFile());
 			myWriter.close();
-			System.out.println("I wrote the new analyses into urineAnalyses.csv.");
+			System.out.println("I wrote the new analyses into " + fileNameString + ".");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

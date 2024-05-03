@@ -1,4 +1,4 @@
-package kidneyAnalysesAgents.AgentsBehaviour;
+package main.kidneyAnalysesAgents.AgentsBehaviour;
 
 import java.io.IOException;
 
@@ -8,9 +8,9 @@ import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
-import kidneyAnalysesAgents.AgentsGUI.AgentPredictGUI;
-import kidneyAnalysesAgents.Helpers.Analysis;
-import kidneyAnalysesAgents.Helpers.FileAdministrator;
+import main.kidneyAnalysesAgents.AgentsGUI.AgentPredictGUI;
+import main.kidneyAnalysesAgents.Helpers.Analysis;
+import main.kidneyAnalysesAgents.Helpers.FileAdministrator;
 
 public class AgentPredict extends Agent {
 	private static final long serialVersionUID = 1L;

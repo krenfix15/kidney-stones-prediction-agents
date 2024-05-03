@@ -1,4 +1,4 @@
-package kidneyAnalysesAgents.AgentsGUI;
+package main.kidneyAnalysesAgents.AgentsGUI;
 
 import java.awt.Color;
 import java.awt.event.FocusAdapter;
@@ -16,9 +16,9 @@ import javax.swing.JTable;
 import javax.swing.JToggleButton;
 import javax.swing.table.DefaultTableModel;
 
-import kidneyAnalysesAgents.AgentsBehaviour.AgentAnalysesManager;
-import kidneyAnalysesAgents.Helpers.Analysis;
-import kidneyAnalysesAgents.Helpers.FileAdministrator;
+import main.kidneyAnalysesAgents.AgentsBehaviour.AgentAnalysesManager;
+import main.kidneyAnalysesAgents.Helpers.Analysis;
+import main.kidneyAnalysesAgents.Helpers.FileAdministrator;
 
 public class AgentAnalysesManagerGUI extends JFrame {
 
@@ -104,7 +104,7 @@ public class AgentAnalysesManagerGUI extends JFrame {
 		tableModel = new DefaultTableModel(columns, 0);
 
 		try {
-			fileAdmin = new FileAdministrator("urineAnalyses.csv");
+			fileAdmin = new FileAdministrator("src\\main\\resources\\urineAnalyses.csv");
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -129,7 +129,7 @@ public class AgentAnalysesManagerGUI extends JFrame {
 		tableModel = new DefaultTableModel(columns, 0);
 
 		try {
-			fileAdmin = new FileAdministrator("selectedUrineAnalyses.csv");
+			fileAdmin = new FileAdministrator("src\\main\\resources\\selectedUrineAnalyses.csv");
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

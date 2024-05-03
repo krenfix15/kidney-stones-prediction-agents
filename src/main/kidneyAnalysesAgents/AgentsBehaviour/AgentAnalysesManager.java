@@ -1,4 +1,4 @@
-package kidneyAnalysesAgents.AgentsBehaviour;
+package main.kidneyAnalysesAgents.AgentsBehaviour;
 
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
@@ -8,9 +8,9 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
-import kidneyAnalysesAgents.AgentsGUI.AgentAnalysesManagerGUI;
-import kidneyAnalysesAgents.Helpers.Analysis;
-import kidneyAnalysesAgents.Helpers.FileAdministrator;
+import main.kidneyAnalysesAgents.AgentsGUI.AgentAnalysesManagerGUI;
+import main.kidneyAnalysesAgents.Helpers.Analysis;
+import main.kidneyAnalysesAgents.Helpers.FileAdministrator;
 
 public class AgentAnalysesManager extends Agent {
 

@@ -1,4 +1,4 @@
-package kidneyAnalysesAgents.AgentsGUI;
+package main.kidneyAnalysesAgents.AgentsGUI;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -15,7 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import kidneyAnalysesAgents.AgentsBehaviour.AgentAddAnalyses;
+import main.kidneyAnalysesAgents.AgentsBehaviour.AgentAddAnalyses;
 
 public class AgentAddAnalysesGUI extends JFrame {
 
