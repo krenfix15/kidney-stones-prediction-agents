@@ -10,9 +10,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import kidneyAnalysesAgents.AgentsBehaviour.AgentPredict;
@@ -201,7 +199,7 @@ public class AgentPredictGUI extends JFrame {
 		btnPredict.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnPredict.setBounds(10, 196, 218, 27);
 		frmPredict.getContentPane().add(btnPredict);
-		
+
 		txtKidneyStonesPresence = new JTextField();
 		txtKidneyStonesPresence.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		txtKidneyStonesPresence.setEditable(false);

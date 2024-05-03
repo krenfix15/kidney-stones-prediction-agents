@@ -19,16 +19,12 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import kidneyAnalysesAgents.AgentsBehaviour.AgentAnalysesSelector;
-import kidneyAnalysesAgents.Helpers.FileAdministrator;
 
 public class AgentAnalysesSelectorGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	// AgentAnalysesSelector
 	private AgentAnalysesSelector agentAnalysesSelector;
-
-	// File handle
-	private FileAdministrator adminFile;
 
 	private JFrame frmDataSelector;
 	private JTextField txtGravityBetween;
