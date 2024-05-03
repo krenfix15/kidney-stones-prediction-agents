@@ -81,7 +81,7 @@ public class AgentAnalysesManager extends Agent {
 
 				ACLMessage reply = msg.createReply();
 
-				if (message != null && !message.isEmpty()) {
+				if (!message.isEmpty()) {
 					// Content is not empty, try to create Analysis object
 					try {
 						Analysis newAnalysis = new Analysis(message);
@@ -114,57 +114,35 @@ public class AgentAnalysesManager extends Agent {
 
 		@Override
 		public void action() {
-			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.ACCEPT_PROPOSAL);
+			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
 
 			ACLMessage msg = myAgent.receive(mt);
 
 			if (msg != null) {
-				// CFP Message received. Process it
-				String mesaj = msg.getContent();
+				// Message received
+				String message = msg.getContent();
 
 				ACLMessage reply = msg.createReply();
 
-				String informatii[] = mesaj.split(" ");
-
-				String cnp = informatii[0];
-
-				Integer suma = Integer.parseInt(informatii[1]);
-
-				String operatie = informatii[2];
-
-				Integer soldNou;
-
-				Integer soldVechiClient = 1; // Integer.valueOf(client.getSold());
-
-				if (soldVechiClient != null && operatie.equals("adaugare")) {
-					soldNou = soldVechiClient + suma;
-					// client.setSold(soldNou.toString());
-
-					System.out.println("Adãugare " + suma + " LEI în cont. Sold cont: " + soldNou + " LEI");
-
-					reply.setPerformative(ACLMessage.INFORM);
-					reply.setContent("Sold actualizat: " + String.valueOf(soldNou) + "\n");
-				} else if (soldVechiClient != null && operatie.equals("extragere") && (soldVechiClient > suma)) {
-					soldNou = soldVechiClient - suma;
-					// client.setSold(soldNou.toString());
-
-					System.out.println("Extragere " + suma + " LEI din cont. Sold cont: " + soldNou + " LEI");
-
-					reply.setPerformative(ACLMessage.INFORM);
-					reply.setContent("Sold actualizat: " + String.valueOf(soldNou) + "\n");
+				if (!message.isEmpty()) {
+					// Content is not empty
+					try {
+						reply.setPerformative(ACLMessage.CONFIRM);
+						reply.setContent("I checked that the file exists. It is okay.");
+					} catch (IllegalArgumentException e) {
+						reply.setPerformative(ACLMessage.FAILURE);
+						reply.setContent("The file does not exist.");
+					}
 				} else {
-					System.out.println("Operatia nu poate fi efectuatã.\n");
-					// Clientul cu acel CNP nu exista
-					reply.setPerformative(ACLMessage.REFUSE);
-					reply.setContent("not-possible");
+					// No content or empty content
+					reply.setPerformative(ACLMessage.FAILURE);
+					reply.setContent("The received message is empty.");
 				}
 
-				// if (client != null && !client.getCNP().equals("")) {
-				// adminFisier.UpdateClient(client);
-				// }
-
+				// Send reply
 				myAgent.send(reply);
 			} else {
+				// No message received, block
 				block();
 			}
 		}

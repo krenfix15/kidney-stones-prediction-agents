@@ -14,7 +14,6 @@ import kidneyAnalysesAgents.Helpers.Analysis;
 public class AgentAddAnalyses extends Agent {
 	private static final long serialVersionUID = 1L;
 
-	// Interfata pentru inregistrare
 	private AgentAddAnalysesGUI interfaceAddAnalyses;
 
 	private Analysis newAnalysis;

@@ -1,23 +1,25 @@
 package kidneyAnalysesAgents.AgentsGUI;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import kidneyAnalysesAgents.AgentsBehaviour.AgentAnalysesSelector;
 import kidneyAnalysesAgents.Helpers.FileAdministrator;
-
-import javax.swing.JLabel;
-import java.awt.Font;
-import java.awt.SystemColor;
-import javax.swing.JCheckBox;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class AgentAnalysesSelectorGUI extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -71,7 +73,6 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		frmDataSelector.setTitle("Analysis Data Selector");
 		frmDataSelector.getContentPane().setBackground(Color.DARK_GRAY);
 		frmDataSelector.getContentPane().setLayout(null);
-		
 		txtGravityBetween = new JTextField();
 		txtGravityBetween.setBackground(SystemColor.desktop);
 		txtGravityBetween.setForeground(SystemColor.activeCaptionBorder);
@@ -82,7 +83,7 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		txtGravityBetween.setBounds(10, 65, 141, 22);
 		frmDataSelector.getContentPane().add(txtGravityBetween);
 		txtGravityBetween.setColumns(10);
-		
+
 		txtPhBetween = new JTextField();
 		txtPhBetween.setText("pH between");
 		txtPhBetween.setForeground(SystemColor.activeCaptionBorder);
@@ -93,7 +94,7 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		txtPhBetween.setBackground(SystemColor.desktop);
 		txtPhBetween.setBounds(10, 97, 141, 22);
 		frmDataSelector.getContentPane().add(txtPhBetween);
-		
+
 		txtOsmolarityBetween = new JTextField();
 		txtOsmolarityBetween.setText("Osmolarity between");
 		txtOsmolarityBetween.setForeground(SystemColor.activeCaptionBorder);
@@ -104,7 +105,7 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		txtOsmolarityBetween.setBackground(SystemColor.desktop);
 		txtOsmolarityBetween.setBounds(10, 129, 141, 22);
 		frmDataSelector.getContentPane().add(txtOsmolarityBetween);
-		
+
 		txtConductivityBetween = new JTextField();
 		txtConductivityBetween.setText("Conductivity between");
 		txtConductivityBetween.setForeground(SystemColor.activeCaptionBorder);
@@ -115,7 +116,7 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		txtConductivityBetween.setBackground(SystemColor.desktop);
 		txtConductivityBetween.setBounds(10, 161, 141, 22);
 		frmDataSelector.getContentPane().add(txtConductivityBetween);
-		
+
 		txtUreaBetween = new JTextField();
 		txtUreaBetween.setText("Urea between");
 		txtUreaBetween.setForeground(SystemColor.activeCaptionBorder);
@@ -126,7 +127,7 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		txtUreaBetween.setBackground(SystemColor.desktop);
 		txtUreaBetween.setBounds(10, 195, 141, 22);
 		frmDataSelector.getContentPane().add(txtUreaBetween);
-		
+
 		txtCalciumBetween = new JTextField();
 		txtCalciumBetween.setText("Calcium between");
 		txtCalciumBetween.setForeground(SystemColor.activeCaptionBorder);
@@ -137,7 +138,7 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		txtCalciumBetween.setBackground(SystemColor.desktop);
 		txtCalciumBetween.setBounds(10, 227, 141, 22);
 		frmDataSelector.getContentPane().add(txtCalciumBetween);
-		
+
 		txtMinimumGravity = new JTextField();
 		txtMinimumGravity.setEnabled(false);
 		txtMinimumGravity.setEditable(false);
@@ -163,7 +164,7 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		txtMinimumGravity.setBounds(200, 65, 67, 22);
 		frmDataSelector.getContentPane().add(txtMinimumGravity);
 		txtMinimumGravity.setColumns(10);
-		
+
 		txtMaximumGravity = new JTextField();
 		txtMaximumGravity.setEnabled(false);
 		txtMaximumGravity.setEditable(false);
@@ -189,9 +190,10 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		txtMaximumGravity.setBackground(SystemColor.desktop);
 		txtMaximumGravity.setBounds(316, 65, 67, 22);
 		frmDataSelector.getContentPane().add(txtMaximumGravity);
-		
+
 		JCheckBox chckbxGravity = new JCheckBox("ALL");
 		chckbxGravity.addChangeListener(new ChangeListener() {
+			@Override
 			public void stateChanged(ChangeEvent evt) {
 				boolean chckbxSelected = chckbxGravity.isSelected();
 				txtMinimumGravity.setEnabled(!chckbxSelected);
@@ -205,7 +207,7 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		chckbxGravity.setBackground(SystemColor.desktop);
 		chckbxGravity.setBounds(425, 67, 48, 21);
 		frmDataSelector.getContentPane().add(chckbxGravity);
-		
+
 		txtMinimumPH = new JTextField();
 		txtMinimumPH.setEnabled(false);
 		txtMinimumPH.setEditable(false);
@@ -231,7 +233,7 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		txtMinimumPH.setBackground(SystemColor.desktop);
 		txtMinimumPH.setBounds(200, 97, 67, 22);
 		frmDataSelector.getContentPane().add(txtMinimumPH);
-		
+
 		txtMinimumOsmo = new JTextField();
 		txtMinimumOsmo.setEnabled(false);
 		txtMinimumOsmo.setEditable(false);
@@ -257,7 +259,7 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		txtMinimumOsmo.setBackground(SystemColor.desktop);
 		txtMinimumOsmo.setBounds(200, 129, 67, 22);
 		frmDataSelector.getContentPane().add(txtMinimumOsmo);
-		
+
 		txtMinimumCond = new JTextField();
 		txtMinimumCond.setEnabled(false);
 		txtMinimumCond.setEditable(false);
@@ -283,7 +285,7 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		txtMinimumCond.setBackground(SystemColor.desktop);
 		txtMinimumCond.setBounds(200, 161, 67, 22);
 		frmDataSelector.getContentPane().add(txtMinimumCond);
-		
+
 		txtMinimumUrea = new JTextField();
 		txtMinimumUrea.setEnabled(false);
 		txtMinimumUrea.setEditable(false);
@@ -309,7 +311,7 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		txtMinimumUrea.setBackground(SystemColor.desktop);
 		txtMinimumUrea.setBounds(200, 195, 67, 22);
 		frmDataSelector.getContentPane().add(txtMinimumUrea);
-		
+
 		txtMinimumCalcium = new JTextField();
 		txtMinimumCalcium.setEditable(false);
 		txtMinimumCalcium.setEnabled(false);
@@ -335,7 +337,7 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		txtMinimumCalcium.setBackground(SystemColor.desktop);
 		txtMinimumCalcium.setBounds(200, 227, 67, 22);
 		frmDataSelector.getContentPane().add(txtMinimumCalcium);
-		
+
 		txtMaximumPH = new JTextField();
 		txtMaximumPH.setEnabled(false);
 		txtMaximumPH.setEditable(false);
@@ -361,7 +363,7 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		txtMaximumPH.setBackground(SystemColor.desktop);
 		txtMaximumPH.setBounds(316, 97, 67, 22);
 		frmDataSelector.getContentPane().add(txtMaximumPH);
-		
+
 		txtMaximumOsmo = new JTextField();
 		txtMaximumOsmo.setEnabled(false);
 		txtMaximumOsmo.setEditable(false);
@@ -387,7 +389,7 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		txtMaximumOsmo.setBackground(SystemColor.desktop);
 		txtMaximumOsmo.setBounds(316, 129, 67, 22);
 		frmDataSelector.getContentPane().add(txtMaximumOsmo);
-		
+
 		txtMaximumCond = new JTextField();
 		txtMaximumCond.setEnabled(false);
 		txtMaximumCond.setEditable(false);
@@ -413,7 +415,7 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		txtMaximumCond.setBackground(SystemColor.desktop);
 		txtMaximumCond.setBounds(316, 161, 67, 22);
 		frmDataSelector.getContentPane().add(txtMaximumCond);
-		
+
 		txtMaximumUrea = new JTextField();
 		txtMaximumUrea.setEnabled(false);
 		txtMaximumUrea.setEditable(false);
@@ -439,7 +441,7 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		txtMaximumUrea.setBackground(SystemColor.desktop);
 		txtMaximumUrea.setBounds(316, 195, 67, 22);
 		frmDataSelector.getContentPane().add(txtMaximumUrea);
-		
+
 		txtMaximumCalcium = new JTextField();
 		txtMaximumCalcium.setEnabled(false);
 		txtMaximumCalcium.setEditable(false);
@@ -465,9 +467,10 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		txtMaximumCalcium.setBackground(SystemColor.desktop);
 		txtMaximumCalcium.setBounds(316, 227, 67, 22);
 		frmDataSelector.getContentPane().add(txtMaximumCalcium);
-		
+
 		chckbxPH = new JCheckBox("ALL");
 		chckbxPH.addChangeListener(new ChangeListener() {
+			@Override
 			public void stateChanged(ChangeEvent evt) {
 				boolean chckbxSelected = chckbxPH.isSelected();
 				txtMinimumPH.setEnabled(!chckbxSelected);
@@ -481,9 +484,10 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		chckbxPH.setBackground(SystemColor.desktop);
 		chckbxPH.setBounds(425, 97, 48, 21);
 		frmDataSelector.getContentPane().add(chckbxPH);
-		
+
 		chckbxOsmo = new JCheckBox("ALL");
 		chckbxOsmo.addChangeListener(new ChangeListener() {
+			@Override
 			public void stateChanged(ChangeEvent evt) {
 				boolean chckbxSelected = chckbxOsmo.isSelected();
 				txtMinimumOsmo.setEnabled(!chckbxSelected);
@@ -497,9 +501,10 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		chckbxOsmo.setBackground(SystemColor.desktop);
 		chckbxOsmo.setBounds(425, 129, 48, 21);
 		frmDataSelector.getContentPane().add(chckbxOsmo);
-		
+
 		chckbxCond = new JCheckBox("ALL");
 		chckbxCond.addChangeListener(new ChangeListener() {
+			@Override
 			public void stateChanged(ChangeEvent evt) {
 				boolean chckbxSelected = chckbxCond.isSelected();
 				txtMinimumCond.setEnabled(!chckbxSelected);
@@ -513,9 +518,10 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		chckbxCond.setBackground(SystemColor.desktop);
 		chckbxCond.setBounds(425, 161, 48, 21);
 		frmDataSelector.getContentPane().add(chckbxCond);
-		
+
 		chckbxUrea = new JCheckBox("ALL");
 		chckbxUrea.addChangeListener(new ChangeListener() {
+			@Override
 			public void stateChanged(ChangeEvent evt) {
 				boolean chckbxSelected = chckbxUrea.isSelected();
 				txtMinimumUrea.setEnabled(!chckbxSelected);
@@ -529,9 +535,10 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		chckbxUrea.setBackground(SystemColor.desktop);
 		chckbxUrea.setBounds(425, 193, 48, 21);
 		frmDataSelector.getContentPane().add(chckbxUrea);
-		
+
 		chckbxCalcium = new JCheckBox("ALL");
 		chckbxCalcium.addChangeListener(new ChangeListener() {
+			@Override
 			public void stateChanged(ChangeEvent evt) {
 				boolean chckbxSelected = chckbxCalcium.isSelected();
 				txtMinimumCalcium.setEnabled(!chckbxSelected);
@@ -545,14 +552,90 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		chckbxCalcium.setBackground(SystemColor.desktop);
 		chckbxCalcium.setBounds(425, 227, 48, 21);
 		frmDataSelector.getContentPane().add(chckbxCalcium);
-		
+
 		JButton btnSelect = new JButton("Select");
+		btnSelect.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Double gravity_min, gravity_max;
+				Double ph_min, ph_max;
+				Double osmo_min, osmo_max;
+				Double cond_min, cond_max;
+				Double urea_min, urea_max;
+				Double calc_min, calc_max;
+
+				if (!isNumber(txtMinimumGravity.getText())) {
+					gravity_min = 0.0;
+				} else {
+					gravity_min = Double.parseDouble(txtMinimumGravity.getText());
+				}
+				if (!isNumber(txtMaximumGravity.getText())) {
+					gravity_max = Double.MAX_VALUE;
+				} else {
+					gravity_max = Double.parseDouble(txtMaximumGravity.getText());
+				}
+				if (!isNumber(txtMinimumPH.getText())) {
+					ph_min = 0.0;
+				} else {
+					ph_min = Double.parseDouble(txtMinimumPH.getText());
+				}
+				if (!isNumber(txtMaximumPH.getText())) {
+					ph_max = Double.MAX_VALUE;
+				} else {
+					ph_max = Double.parseDouble(txtMaximumPH.getText());
+				}
+				if (!isNumber(txtMinimumOsmo.getText())) {
+					osmo_min = 0.0;
+				} else {
+					osmo_min = Double.parseDouble(txtMinimumOsmo.getText());
+				}
+				if (!isNumber(txtMaximumOsmo.getText())) {
+					osmo_max = Double.MAX_VALUE;
+				} else {
+					osmo_max = Double.parseDouble(txtMaximumOsmo.getText());
+				}
+				if (!isNumber(txtMinimumCond.getText())) {
+					cond_min = 0.0;
+				} else {
+					cond_min = Double.parseDouble(txtMinimumCond.getText());
+				}
+				if (!isNumber(txtMaximumCond.getText())) {
+					cond_max = Double.MAX_VALUE;
+				} else {
+					cond_max = Double.parseDouble(txtMaximumCond.getText());
+				}
+				if (!isNumber(txtMinimumUrea.getText())) {
+					urea_min = 0.0;
+				} else {
+					urea_min = Double.parseDouble(txtMinimumUrea.getText());
+				}
+				if (!isNumber(txtMaximumUrea.getText())) {
+					urea_max = Double.MAX_VALUE;
+				} else {
+					urea_max = Double.parseDouble(txtMaximumUrea.getText());
+				}
+				if (!isNumber(txtMinimumCalcium.getText())) {
+					calc_min = 0.0;
+				} else {
+					calc_min = Double.parseDouble(txtMinimumCalcium.getText());
+				}
+				if (!isNumber(txtMaximumCalcium.getText())) {
+					calc_max = Double.MAX_VALUE;
+				} else {
+					calc_max = Double.parseDouble(txtMaximumCalcium.getText());
+				}
+
+				agentAnalysesSelector.SelectUrineAnalyses(gravity_min, gravity_max, ph_min, ph_max, osmo_min, osmo_max,
+						cond_min, cond_max, urea_min, urea_max, calc_min, calc_max);
+			}
+		});
+
 		btnSelect.setBackground(SystemColor.desktop);
 		btnSelect.setForeground(SystemColor.activeCaptionBorder);
 		btnSelect.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		btnSelect.setBounds(10, 284, 463, 25);
 		frmDataSelector.getContentPane().add(btnSelect);
-		
+
 		lblNewLabel = new JLabel("Select the urine analyses with these intervals for the parameters: ");
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblNewLabel.setForeground(SystemColor.desktop);
@@ -576,4 +659,12 @@ public class AgentAnalysesSelectorGUI extends JFrame {
 		frmDataSelector.setVisible(true);
 	}
 
+	public static boolean isNumber(String str) {
+		try {
+			Double.parseDouble(str);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
+	}
 }

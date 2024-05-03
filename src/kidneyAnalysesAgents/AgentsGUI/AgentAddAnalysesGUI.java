@@ -219,20 +219,21 @@ public class AgentAddAnalysesGUI extends JFrame {
 		btnInregistrare.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (txtGravity.getText().matches("[+-]?(\\d*\\.\\d+|\\d+\\.\\d*|\\d+)")) {
-					if(((String) cbKidneyStones.getSelectedItem()) == "Present") {
+				if (isNumber(txtGravity.getText()) && isNumber(txtPh.getText()) && isNumber(txtOsmo.getText())
+						&& isNumber(txtCond.getText()) && isNumber(txtUreaConcentration.getText())
+						&& isNumber(txtCalciumConcentration.getText())) {
+					if (((String) cbKidneyStones.getSelectedItem()) == "Present") {
 						// Start the one shot behaviour to add new analysis
 						agentAddAnalyses.AddNewUrineAnalyses(txtGravity.getText(), txtPh.getText(), txtOsmo.getText(),
 								txtCond.getText(), txtUreaConcentration.getText(), txtCalciumConcentration.getText(),
 								"1");
-					}
-					else {
+					} else {
 						// Start the one shot behaviour to add new analysis
 						agentAddAnalyses.AddNewUrineAnalyses(txtGravity.getText(), txtPh.getText(), txtOsmo.getText(),
 								txtCond.getText(), txtUreaConcentration.getText(), txtCalciumConcentration.getText(),
 								"0");
 					}
-						
+
 					setTextImplicitControale();
 					setCuloareImplicitControale(Color.LIGHT_GRAY);
 				} else {
@@ -250,6 +251,8 @@ public class AgentAddAnalysesGUI extends JFrame {
 		txtPh.setText("pH");
 		txtOsmo.setText("Osmolarity");
 		txtCond.setText("Conductivity");
+		txtUreaConcentration.setText("Urea concentration");
+		txtCalciumConcentration.setText("Calcium concentration");
 	}
 
 	// Setarea culorii implicite a textului din textboxuri
@@ -258,9 +261,20 @@ public class AgentAddAnalysesGUI extends JFrame {
 		txtPh.setForeground(fg);
 		txtOsmo.setForeground(fg);
 		txtCond.setForeground(fg);
+		txtUreaConcentration.setForeground(fg);
+		txtCalciumConcentration.setForeground(fg);
 	}
 
 	public void showInterface() {
 		frmAddAnalyses.setVisible(true);
+	}
+
+	public static boolean isNumber(String str) {
+		try {
+			Double.parseDouble(str);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
 	}
 }

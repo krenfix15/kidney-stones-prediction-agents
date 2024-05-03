@@ -1,31 +1,31 @@
 package kidneyAnalysesAgents.AgentsBehaviour;
 
-import java.io.IOException;
+import java.util.ArrayList;
 
+import jade.core.AID;
 import jade.core.Agent;
-import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
 import kidneyAnalysesAgents.AgentsGUI.AgentAnalysesSelectorGUI;
 import kidneyAnalysesAgents.Helpers.Analysis;
 import kidneyAnalysesAgents.Helpers.FileAdministrator;
 
 public class AgentAnalysesSelector extends Agent {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
-	public Analysis analyses;
-
-	private FileAdministrator adminFisier = new FileAdministrator();
+	public ArrayList<Analysis> selectedAnalyses;
 
 	private AgentAnalysesSelectorGUI agentInterface;
+
+	private FileAdministrator fileAdmin = new FileAdministrator();
+
+	private String selectedAnalysesFilename = "selectedUrineAnalyses.csv";
+
+	private AID[] agentsAnalysesManagers;
 
 	@Override
 	protected void setup() {
@@ -48,10 +48,6 @@ public class AgentAnalysesSelector extends Agent {
 		} catch (FIPAException fe) {
 			fe.printStackTrace();
 		}
-
-		addBehaviour(new ServiciuSold());
-
-		addBehaviour(new ServiciuTranzactie());
 	}
 
 	// Delete the agent
@@ -71,99 +67,53 @@ public class AgentAnalysesSelector extends Agent {
 		System.out.println("The agent " + getAID().getName() + " is closing.\n");
 	}
 
-	private class ServiciuSold extends CyclicBehaviour {
-		private static final long serialVersionUID = 1L;
+	// Invoked by interface when adding new analysis sample
+	public void SelectUrineAnalyses(final Double gravity_min, final Double gravity_max, final Double pH_min,
+			final Double pH_max, final Double osmo_min, final Double osmo_max, final Double conductivity_min,
+			final Double conductivity_max, final Double urea_min, final Double urea_max, final Double calcium_min,
+			final Double calcium_max) {
+		addBehaviour(new OneShotBehaviour() {
+			private static final long serialVersionUID = 1L;
 
-		@Override
-		public void action() {
-			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.CFP);
+			@Override
+			public void action() {
 
-			ACLMessage msg = myAgent.receive(mt);
+				DFAgentDescription template = new DFAgentDescription();
+				ServiceDescription sd = new ServiceDescription();
+				sd.setType("manager");
 
-			if (msg != null) {
-				// CFP Message received. Process it
-				String mesaj = msg.getContent();
+				template.addServices(sd);
 
-				ACLMessage reply = msg.createReply();
+				try {
+					DFAgentDescription[] result = DFService.search(myAgent, template);
+					System.out.println("Found the analyses agent:");
+					agentsAnalysesManagers = new AID[result.length];
 
+					for (int i = 0; i < result.length; ++i) {
+						agentsAnalysesManagers[i] = result[i].getName();
+						System.out.println(agentsAnalysesManagers[i].getName());
+					}
 
-				Integer soldVechiClient = 1; //Integer.valueOf(client.getSold());
-
-				if (soldVechiClient != null) {
-					reply.setPerformative(ACLMessage.PROPOSE);
-					reply.setContent("Sold curent: " + soldVechiClient.toString());
-				} else {
-					reply.setPerformative(ACLMessage.REFUSE);
-					reply.setContent("not-available");
+				} catch (FIPAException fe) {
+					fe.printStackTrace();
 				}
 
-				myAgent.send(reply);
-			} else {
-				block();
-			}
-		}
-	} 
-
-	private class ServiciuTranzactie extends CyclicBehaviour {
-		private static final long serialVersionUID = 1L;
-
-		@Override
-		public void action() {
-			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.ACCEPT_PROPOSAL);
-
-			ACLMessage msg = myAgent.receive(mt);
-
-			if (msg != null) {
-				// CFP Message received. Process it
-				String mesaj = msg.getContent();
-
-				ACLMessage reply = msg.createReply();
-
-				String informatii[] = mesaj.split(" ");
-
-				String cnp = informatii[0];
-
-				Integer suma = Integer.parseInt(informatii[1]);
-
-				String operatie = informatii[2];
-
-				Integer soldNou;
-
-
-				Integer soldVechiClient = 1; //Integer.valueOf(client.getSold());
-
-				if (soldVechiClient != null && operatie.equals("adaugare")) {
-					soldNou = soldVechiClient + suma;
-					//client.setSold(soldNou.toString());
-
-					System.out.println("Adãugare " + suma + " LEI în cont. Sold cont: " + soldNou + " LEI");
-
-					reply.setPerformative(ACLMessage.INFORM);
-					reply.setContent("Sold actualizat: " + String.valueOf(soldNou) + "\n");
-				} else if (soldVechiClient != null && operatie.equals("extragere") && (soldVechiClient > suma)) {
-					soldNou = soldVechiClient - suma;
-					//client.setSold(soldNou.toString());
-
-					System.out.println("Extragere " + suma + " LEI din cont. Sold cont: " + soldNou + " LEI");
-
-					reply.setPerformative(ACLMessage.INFORM);
-					reply.setContent("Sold actualizat: " + String.valueOf(soldNou) + "\n");
-				} else {
-					System.out.println("Operatia nu poate fi efectuatã.\n");
-					// Clientul cu acel CNP nu exista
-					reply.setPerformative(ACLMessage.REFUSE);
-					reply.setContent("not-possible");
+				ACLMessage message = new ACLMessage(ACLMessage.INFORM);
+				for (AID agent : agentsAnalysesManagers) {
+					message.addReceiver(agent);
 				}
 
-				//if (client != null && !client.getCNP().equals("")) {
-					//adminFisier.UpdateClient(client);
-				//}
+				fileAdmin.writeSelectedAnalysesToFile(
+						fileAdmin.selectUrineAnalyses(gravity_min, gravity_max, pH_min, pH_max, osmo_min, osmo_max,
+								conductivity_min, conductivity_max, urea_min, urea_max, calcium_min, calcium_max),
+						selectedAnalysesFilename);
 
-				myAgent.send(reply);
-			} else {
-				block();
+				message.setContent("The selected analyses were written to " + selectedAnalysesFilename + ".");
+
+				// Send the message
+				myAgent.send(message);
+				System.out.println("\nInform message sent to the analyses manager!");
 			}
-		}
+		});
 	}
-
 }

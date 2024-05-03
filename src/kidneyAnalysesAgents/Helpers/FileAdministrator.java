@@ -103,4 +103,47 @@ public class FileAdministrator {
 
 		return analysesList;
 	}
+
+	public ArrayList<Analysis> selectUrineAnalyses(Double gravity_min, Double gravity_max, Double pH_min, Double pH_max,
+			Double osmo_min, Double osmo_max, Double conductivity_min, Double conductivity_max, Double urea_min,
+			Double urea_max, Double calcium_min, Double calcium_max) {
+		ArrayList<Analysis> allAnalyses = GetAllAnalyses();
+		ArrayList<Analysis> selectedAnalyses = new ArrayList<>();
+
+		for (Analysis analysis : allAnalyses) {
+			double gravity = Double.parseDouble(analysis.getGravityString());
+			double pH = Double.parseDouble(analysis.getPhString());
+			double osmolarity = Double.parseDouble(analysis.getOsmoString());
+			double conductivity = Double.parseDouble(analysis.getConductivityString());
+			double urea = Double.parseDouble(analysis.getUreaString());
+			double calcium = Double.parseDouble(analysis.getCalciumString());
+
+			if (gravity >= gravity_min && gravity <= gravity_max && pH >= pH_min && pH <= pH_max
+					&& osmolarity >= osmo_min && osmolarity <= osmo_max && conductivity >= conductivity_min
+					&& conductivity <= conductivity_max && urea >= urea_min && urea <= urea_max
+					&& calcium >= calcium_min && calcium <= calcium_max) {
+				selectedAnalyses.add(analysis);
+			}
+		}
+
+		return selectedAnalyses;
+	}
+
+	public void writeSelectedAnalysesToFile(ArrayList<Analysis> selectedAnalyses, String outputFileName) {
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileName))) {
+			// Write header line
+			writer.write("gravity,ph,osmolarity,conductivity,urea,calcium,kidneystonespresence");
+			writer.newLine();
+
+			// Write each selected analysis
+			for (Analysis analysis : selectedAnalyses) {
+				writer.write(analysis.toString());
+				writer.newLine();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		removeEmptyLines(outputFileName);
+		System.out.println("\nI wrote the new analyses into " + outputFileName + ".");
+	}
 }
