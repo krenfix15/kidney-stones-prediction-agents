@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -46,7 +48,7 @@ public class AgentPredictGUI extends JFrame {
 		frmPredict = new JFrame();
 		frmPredict.setTitle("Predict");
 		frmPredict.getContentPane().setBackground(Color.DARK_GRAY);
-		frmPredict.setBounds(100, 100, 252, 425);
+		frmPredict.setBounds(100, 100, 252, 418);
 		frmPredict.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmPredict.getContentPane().setLayout(null);
 
@@ -200,25 +202,39 @@ public class AgentPredictGUI extends JFrame {
 		btnPredict.setForeground(Color.WHITE);
 		btnPredict.setBackground(Color.BLACK);
 		btnPredict.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnPredict.setBounds(10, 291, 218, 27);
+		btnPredict.setBounds(10, 268, 218, 27);
 		frmPredict.getContentPane().add(btnPredict);
 
 		txtKidneyStonesPresence = new JTextField();
-		txtKidneyStonesPresence.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		txtKidneyStonesPresence.setEditable(false);
-		txtKidneyStonesPresence.setEnabled(false);
-		txtKidneyStonesPresence.setText("Predicted kidney stones presence");
-		txtKidneyStonesPresence.setForeground(Color.LIGHT_GRAY);
+		txtKidneyStonesPresence.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				if (null != agentPredict.getPredictionResult()) {
+					if (agentPredict.getPredictionResult().equals("KIDNEY STONES ARE PRESENT")) {
+						txtKidneyStonesPresence.setBackground(Color.RED);
+						txtKidneyStonesPresence.setText("       " + agentPredict.getPredictionResult());
+					}
+					if (agentPredict.getPredictionResult().equals("KIDNEY STONES ARE NOT PRESENT")) {
+						txtKidneyStonesPresence.setBackground(Color.GREEN);
+						txtKidneyStonesPresence.setText("     " + agentPredict.getPredictionResult());
+					}
+				}
+			}
+		});
+		txtKidneyStonesPresence.setFont(new Font("Tahoma", Font.BOLD, 11));
+		txtKidneyStonesPresence.setText("            HOVER OVER WITH MOUSE");
+		txtKidneyStonesPresence.setForeground(Color.WHITE);
 		txtKidneyStonesPresence.setColumns(10);
 		txtKidneyStonesPresence.setBackground(Color.BLACK);
-		txtKidneyStonesPresence.setBounds(10, 338, 218, 37);
+		txtKidneyStonesPresence.setBounds(10, 331, 218, 37);
 		frmPredict.getContentPane().add(txtKidneyStonesPresence);
 
 		JLabel lblSelectDataset = new JLabel("Select dataset to train on");
-		lblSelectDataset.setForeground(SystemColor.desktop);
+		lblSelectDataset.setForeground(Color.WHITE);
 		lblSelectDataset.setBackground(SystemColor.desktop);
 		lblSelectDataset.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblSelectDataset.setBounds(10, 197, 216, 14);
+		lblSelectDataset.setBounds(10, 208, 216, 14);
 		frmPredict.getContentPane().add(lblSelectDataset);
 
 		JComboBox<String> cmbBoxSelectDataset = new JComboBox<String>();
@@ -229,6 +245,12 @@ public class AgentPredictGUI extends JFrame {
 		cmbBoxSelectDataset.addItem("Entire dataset");
 		cmbBoxSelectDataset.addItem("Selected dataset");
 		frmPredict.getContentPane().add(cmbBoxSelectDataset);
+
+		JLabel lblNewLabel = new JLabel("Predicted kidney stones presence");
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblNewLabel.setForeground(Color.WHITE);
+		lblNewLabel.setBounds(10, 316, 218, 14);
+		frmPredict.getContentPane().add(lblNewLabel);
 
 		btnPredict.addActionListener(new ActionListener() {
 			@Override
@@ -243,17 +265,12 @@ public class AgentPredictGUI extends JFrame {
 
 					agentPredict.ReceiveDataset();
 
-					agentPredict.PredictKidneyStones();
-
-					if (null != agentPredict.getPredictionResult()) {
-						if (agentPredict.getPredictionResult().equals("KIDNEY STONES ARE PRESENT")) {
-							txtKidneyStonesPresence.setForeground(Color.RED);
-							txtKidneyStonesPresence.setText(agentPredict.getPredictionResult());
-						}
-						if (agentPredict.getPredictionResult().equals("KIDNEY STONES ARE NOT PRESENT")) {
-							txtKidneyStonesPresence.setForeground(Color.GREEN);
-							txtKidneyStonesPresence.setText(agentPredict.getPredictionResult());
-						}
+					String selectedString = (String) cmbBoxSelectDataset.getSelectedItem();
+					if (selectedString != null && selectedString.equals("Entire dataset")) {
+						agentPredict.PredictKidneyStones("urineAnalyses.csv");
+					}
+					if (selectedString != null && selectedString.equals("Selected dataset")) {
+						agentPredict.PredictKidneyStones("selectedUrineAnalyses.csv");
 					}
 
 					setDefaultTextForTexboxes();
@@ -275,6 +292,7 @@ public class AgentPredictGUI extends JFrame {
 		txtCond.setText("Conductivity");
 		txtUreaConcentration.setText("Urea concentration");
 		txtCalciumConcentration.setText("Calcium concentration");
+		txtKidneyStonesPresence.setText("            HOVER OVER WITH MOUSE");
 	}
 
 	// Set default color for textboxes
@@ -285,6 +303,7 @@ public class AgentPredictGUI extends JFrame {
 		txtCond.setForeground(fg);
 		txtUreaConcentration.setForeground(fg);
 		txtCalciumConcentration.setForeground(fg);
+		txtKidneyStonesPresence.setBackground(Color.BLACK);
 	}
 
 	public void showInterface() {
