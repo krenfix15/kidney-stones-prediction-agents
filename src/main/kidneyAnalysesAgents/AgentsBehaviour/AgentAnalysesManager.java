@@ -47,6 +47,8 @@ public class AgentAnalysesManager extends Agent {
 		addBehaviour(new AddAnalysesService());
 
 		addBehaviour(new SelectAnalysesService());
+
+		addBehaviour(new MessageDatasetService());
 	}
 
 	// Delete the agent
@@ -132,6 +134,55 @@ public class AgentAnalysesManager extends Agent {
 					} catch (IllegalArgumentException e) {
 						reply.setPerformative(ACLMessage.FAILURE);
 						reply.setContent("The file does not exist.");
+					}
+				} else {
+					// No content or empty content
+					reply.setPerformative(ACLMessage.FAILURE);
+					reply.setContent("The received message is empty.");
+				}
+
+				// Send reply
+				myAgent.send(reply);
+			} else {
+				// No message received, block
+				block();
+			}
+		}
+	}
+
+	private class MessageDatasetService extends CyclicBehaviour {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public void action() {
+			MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
+
+			ACLMessage msg = myAgent.receive(mt);
+
+			if (msg != null) {
+				// Message received
+				String message = msg.getContent();
+
+				ACLMessage reply = msg.createReply();
+
+				if (!message.isEmpty()) {
+					if (message.equals("entire dataset")) {
+						try {
+							reply.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+							reply.setContent("urineAnalyses.csv");
+						} catch (IllegalArgumentException e) {
+							reply.setPerformative(ACLMessage.FAILURE);
+							reply.setContent("The message was not received.");
+						}
+					}
+					if (message.equals("selected dataset")) {
+						try {
+							reply.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+							reply.setContent("selectedUrineAnalyses.csv");
+						} catch (IllegalArgumentException e) {
+							reply.setPerformative(ACLMessage.FAILURE);
+							reply.setContent("The message was not received.");
+						}
 					}
 				} else {
 					// No content or empty content

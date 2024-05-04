@@ -209,14 +209,14 @@ public class AgentAddAnalysesGUI extends JFrame {
 		lblKidneyStonesPresence.setBounds(10, 195, 137, 14);
 		frmAddAnalyses.getContentPane().add(lblKidneyStonesPresence);
 
-		JButton btnInregistrare = new JButton("Add analyses");
-		btnInregistrare.setForeground(Color.WHITE);
-		btnInregistrare.setBackground(Color.BLACK);
-		btnInregistrare.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnInregistrare.setBounds(10, 279, 137, 27);
-		frmAddAnalyses.getContentPane().add(btnInregistrare);
+		JButton btnAddAnalysis = new JButton("Add analysis");
+		btnAddAnalysis.setForeground(Color.WHITE);
+		btnAddAnalysis.setBackground(Color.BLACK);
+		btnAddAnalysis.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnAddAnalysis.setBounds(10, 279, 137, 27);
+		frmAddAnalyses.getContentPane().add(btnAddAnalysis);
 
-		btnInregistrare.addActionListener(new ActionListener() {
+		btnAddAnalysis.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (isNumber(txtGravity.getText()) && isNumber(txtPh.getText()) && isNumber(txtOsmo.getText())
@@ -224,20 +224,20 @@ public class AgentAddAnalysesGUI extends JFrame {
 						&& isNumber(txtCalciumConcentration.getText())) {
 					if (((String) cbKidneyStones.getSelectedItem()) == "Present") {
 						// Start the one shot behaviour to add new analysis
-						agentAddAnalyses.AddNewUrineAnalyses(txtGravity.getText(), txtPh.getText(), txtOsmo.getText(),
+						agentAddAnalyses.AddNewUrineAnalysis(txtGravity.getText(), txtPh.getText(), txtOsmo.getText(),
 								txtCond.getText(), txtUreaConcentration.getText(), txtCalciumConcentration.getText(),
 								"1");
 					} else {
 						// Start the one shot behaviour to add new analysis
-						agentAddAnalyses.AddNewUrineAnalyses(txtGravity.getText(), txtPh.getText(), txtOsmo.getText(),
+						agentAddAnalyses.AddNewUrineAnalysis(txtGravity.getText(), txtPh.getText(), txtOsmo.getText(),
 								txtCond.getText(), txtUreaConcentration.getText(), txtCalciumConcentration.getText(),
 								"0");
 					}
 
-					setTextImplicitControale();
-					setCuloareImplicitControale(Color.LIGHT_GRAY);
+					setDefaultTextForTexboxes();
+					setDefaultColorForTexboxes(Color.LIGHT_GRAY);
 				} else {
-					System.out.print("Înregistrarea nu a putut fi efectuată. Verificați ca datele să fie valide!\n");
+					System.out.print("Adding was not possible, check the validity of the inputs!\n");
 				}
 			}
 		});
@@ -245,8 +245,8 @@ public class AgentAddAnalysesGUI extends JFrame {
 		setResizable(false);
 	}
 
-	// Setarea textului implicit al textboxurilor
-	private void setTextImplicitControale() {
+	// Set default text for textboxes
+	private void setDefaultTextForTexboxes() {
 		txtGravity.setText("Gravity");
 		txtPh.setText("pH");
 		txtOsmo.setText("Osmolarity");
@@ -255,8 +255,8 @@ public class AgentAddAnalysesGUI extends JFrame {
 		txtCalciumConcentration.setText("Calcium concentration");
 	}
 
-	// Setarea culorii implicite a textului din textboxuri
-	private void setCuloareImplicitControale(Color fg) {
+	// Set default color for textboxes
+	private void setDefaultColorForTexboxes(Color fg) {
 		txtGravity.setForeground(fg);
 		txtPh.setForeground(fg);
 		txtOsmo.setForeground(fg);
