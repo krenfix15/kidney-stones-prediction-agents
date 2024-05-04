@@ -59,7 +59,7 @@ public class AgentAddAnalyses extends Agent {
 	}
 
 	// Invoked by interface when adding new analysis sample
-	public void AddNewUrineAnalyses(final String gravity, final String pH, final String osmo, final String conductivity,
+	public void AddNewUrineAnalysis(final String gravity, final String pH, final String osmo, final String conductivity,
 			final String urea, final String calcium, final String kidneyStonesPresence) {
 		addBehaviour(new OneShotBehaviour() {
 			private static final long serialVersionUID = 1L;
@@ -82,7 +82,7 @@ public class AgentAddAnalyses extends Agent {
 
 				try {
 					DFAgentDescription[] result = DFService.search(myAgent, template);
-					System.out.println("Found the analyses agent:");
+					System.out.println("Found the analyses manager agent:");
 					agentsAnalysesManagers = new AID[result.length];
 
 					for (int i = 0; i < result.length; ++i) {
@@ -94,11 +94,11 @@ public class AgentAddAnalyses extends Agent {
 					fe.printStackTrace();
 				}
 
-				ACLMessage message = new ACLMessage(ACLMessage.PROPAGATE);
+				ACLMessage message = new ACLMessage(ACLMessage.REQUEST);
 				for (AID agent : agentsAnalysesManagers) {
 					message.addReceiver(agent);
 				}
-				message.setContent(newAnalysis.toString());
+				message.setContent(newAnalysis.convertAnalysisToPredictToString());
 
 				// Send the message
 				myAgent.send(message);

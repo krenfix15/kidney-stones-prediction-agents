@@ -2,6 +2,7 @@ package main.kidneyAnalysesAgents.AgentsGUI;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -10,7 +11,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import main.kidneyAnalysesAgents.AgentsBehaviour.AgentPredict;
@@ -43,7 +46,7 @@ public class AgentPredictGUI extends JFrame {
 		frmPredict = new JFrame();
 		frmPredict.setTitle("Predict");
 		frmPredict.getContentPane().setBackground(Color.DARK_GRAY);
-		frmPredict.setBounds(100, 100, 252, 353);
+		frmPredict.setBounds(100, 100, 252, 425);
 		frmPredict.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmPredict.getContentPane().setLayout(null);
 
@@ -197,35 +200,66 @@ public class AgentPredictGUI extends JFrame {
 		btnPredict.setForeground(Color.WHITE);
 		btnPredict.setBackground(Color.BLACK);
 		btnPredict.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnPredict.setBounds(10, 196, 218, 27);
+		btnPredict.setBounds(10, 291, 218, 27);
 		frmPredict.getContentPane().add(btnPredict);
 
 		txtKidneyStonesPresence = new JTextField();
 		txtKidneyStonesPresence.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		txtKidneyStonesPresence.setEditable(false);
 		txtKidneyStonesPresence.setEnabled(false);
-		txtKidneyStonesPresence.setText("Predicted kidney stones presence chance");
+		txtKidneyStonesPresence.setText("Predicted kidney stones presence");
 		txtKidneyStonesPresence.setForeground(Color.LIGHT_GRAY);
 		txtKidneyStonesPresence.setColumns(10);
 		txtKidneyStonesPresence.setBackground(Color.BLACK);
-		txtKidneyStonesPresence.setBounds(10, 248, 218, 58);
+		txtKidneyStonesPresence.setBounds(10, 338, 218, 37);
 		frmPredict.getContentPane().add(txtKidneyStonesPresence);
+
+		JLabel lblSelectDataset = new JLabel("Select dataset to train on");
+		lblSelectDataset.setForeground(SystemColor.desktop);
+		lblSelectDataset.setBackground(SystemColor.desktop);
+		lblSelectDataset.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblSelectDataset.setBounds(10, 197, 216, 14);
+		frmPredict.getContentPane().add(lblSelectDataset);
+
+		JComboBox<String> cmbBoxSelectDataset = new JComboBox<String>();
+		cmbBoxSelectDataset.setToolTipText("");
+		cmbBoxSelectDataset.setForeground(new Color(192, 192, 192));
+		cmbBoxSelectDataset.setBackground(new Color(0, 0, 0));
+		cmbBoxSelectDataset.setBounds(10, 222, 218, 22);
+		cmbBoxSelectDataset.addItem("Entire dataset");
+		cmbBoxSelectDataset.addItem("Selected dataset");
+		frmPredict.getContentPane().add(cmbBoxSelectDataset);
 
 		btnPredict.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (txtGravity.getText().matches("[a-zA-Z]+") && !txtGravity.getText().equals("Nume")
-						&& txtPh.getText().matches("[a-zA-Z]+") && !txtPh.getText().equals("Prenume")
-						&& txtOsmo.getText().matches(
-								"^[1-9]\\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])(0[1-9]|[1-4]\\d|5[0-2]|99)(00[1-9]|0[1-9]\\d|[1-9]\\d\\d)\\d$")
-						&& txtCond.getText().matches("[1-9][0-9]*")) {
-					agentPredict.AddNewUrineAnalyses(txtGravity.getText(), txtPh.getText(), txtOsmo.getText(),
-							txtCond.getText(), txtUreaConcentration.getText(), txtCalciumConcentration.getText());
+				if (isNumber(txtGravity.getText()) && isNumber(txtPh.getText()) && isNumber(txtOsmo.getText())
+						&& isNumber(txtCond.getText()) && isNumber(txtUreaConcentration.getText())
+						&& isNumber(txtCalciumConcentration.getText())) {
+					// Start the one shot behaviour to request the prediction
+					agentPredict.RequestPredictNewAnalysis(txtGravity.getText(), txtPh.getText(), txtOsmo.getText(),
+							txtCond.getText(), txtUreaConcentration.getText(), txtCalciumConcentration.getText(),
+							((String) cmbBoxSelectDataset.getSelectedItem()));
 
-					setTextImplicitControale();
-					setCuloareImplicitControale(Color.LIGHT_GRAY);
+					agentPredict.ReceiveDataset();
+
+					agentPredict.PredictKidneyStones();
+
+					if (null != agentPredict.getPredictionResult()) {
+						if (agentPredict.getPredictionResult().equals("KIDNEY STONES ARE PRESENT")) {
+							txtKidneyStonesPresence.setForeground(Color.RED);
+							txtKidneyStonesPresence.setText(agentPredict.getPredictionResult());
+						}
+						if (agentPredict.getPredictionResult().equals("KIDNEY STONES ARE NOT PRESENT")) {
+							txtKidneyStonesPresence.setForeground(Color.GREEN);
+							txtKidneyStonesPresence.setText(agentPredict.getPredictionResult());
+						}
+					}
+
+					setDefaultTextForTexboxes();
+					setDefaultColorForTexboxes(Color.LIGHT_GRAY);
 				} else {
-					System.out.print("Înregistrarea nu a putut fi efectuată. Verificați ca datele să fie valide!\n");
+					System.out.print("Predicting was not possible, check the validity of the inputs!\n");
 				}
 			}
 		});
@@ -233,23 +267,36 @@ public class AgentPredictGUI extends JFrame {
 		setResizable(false);
 	}
 
-	// Setarea textului implicit al textboxurilor
-	private void setTextImplicitControale() {
+	// Set default text for textboxes
+	private void setDefaultTextForTexboxes() {
 		txtGravity.setText("Gravity");
 		txtPh.setText("pH");
 		txtOsmo.setText("Osmolarity");
 		txtCond.setText("Conductivity");
+		txtUreaConcentration.setText("Urea concentration");
+		txtCalciumConcentration.setText("Calcium concentration");
 	}
 
-	// Setarea culorii implicite a textului din textboxuri
-	private void setCuloareImplicitControale(Color fg) {
+	// Set default color for textboxes
+	private void setDefaultColorForTexboxes(Color fg) {
 		txtGravity.setForeground(fg);
 		txtPh.setForeground(fg);
 		txtOsmo.setForeground(fg);
 		txtCond.setForeground(fg);
+		txtUreaConcentration.setForeground(fg);
+		txtCalciumConcentration.setForeground(fg);
 	}
 
 	public void showInterface() {
 		frmPredict.setVisible(true);
+	}
+
+	public static boolean isNumber(String str) {
+		try {
+			Double.parseDouble(str);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
 	}
 }

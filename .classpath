@@ -21,5 +21,6 @@
 	<classpathentry exported="true" kind="lib" path="D:/eclipse-workspace/KidneyAnalysesAgents/lib/jfreechart-1.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="D:/eclipse-workspace/KidneyAnalysesAgents/lib/junit.jar"/>
 	<classpathentry exported="true" kind="lib" path="D:/eclipse-workspace/KidneyAnalysesAgents/lib/servlet.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse-workspace/KidneyAnalysesAgents/lib/miglayout-swing.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
