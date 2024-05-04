@@ -212,11 +212,11 @@ public class AgentPredictGUI extends JFrame {
 			public void mouseMoved(MouseEvent e) {
 				if (null != agentPredict.getPredictionResult()) {
 					if (agentPredict.getPredictionResult().equals("KIDNEY STONES ARE PRESENT")) {
-						txtKidneyStonesPresence.setBackground(Color.RED);
+						txtKidneyStonesPresence.setBackground(new Color(139, 0, 0)); // DARK RED
 						txtKidneyStonesPresence.setText("       " + agentPredict.getPredictionResult());
 					}
 					if (agentPredict.getPredictionResult().equals("KIDNEY STONES ARE NOT PRESENT")) {
-						txtKidneyStonesPresence.setBackground(Color.GREEN);
+						txtKidneyStonesPresence.setBackground(new Color(1, 100, 0)); // DARK GREEN
 						txtKidneyStonesPresence.setText("     " + agentPredict.getPredictionResult());
 					}
 				}
