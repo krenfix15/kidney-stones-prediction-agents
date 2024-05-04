@@ -69,7 +69,7 @@ public class AgentPredict extends Agent {
 	private static final int NUM_FEATURES = 6;
 	private static final int NUM_CLASSES = 2;
 	private static final int SEED = 123;
-	private static final int NUM_EPOCHS = 100;
+	private static final int NUM_EPOCHS = 1000;
 	private static final double[] NEW_ANALYSIS_DATA = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
 	private static List<Double> trainingLosses = new ArrayList<>();
 
@@ -183,9 +183,9 @@ public class AgentPredict extends Agent {
 					ACLMessage reply = msg.createReply();
 
 					if (!message.isEmpty()) {
-						filename = message;
+						setFilename(message);
 						reply.setPerformative(ACLMessage.CONFIRM);
-						reply.setContent("I received the dataset!");
+						reply.setContent("I received the dataset from " + getFilename());
 					} else {
 						// No content or empty content
 						reply.setPerformative(ACLMessage.FAILURE);
@@ -202,7 +202,7 @@ public class AgentPredict extends Agent {
 		});
 	}
 
-	public void PredictKidneyStones() {
+	public void PredictKidneyStones(String filename) {
 		addBehaviour(new OneShotBehaviour() {
 			private static final long serialVersionUID = 1L;
 
@@ -402,18 +402,29 @@ public class AgentPredict extends Agent {
 		return predictionString;
 	}
 
-	public String getPredictionResult() {
-		return predictionString;
-	}
-
 	private void closeChartFrame() {
 		// Get all frames owned by this agent
 		Frame[] frames = Frame.getFrames();
 		for (Frame frame : frames) {
 			if (frame instanceof JFrame && frame.getTitle().equals("Training Loss")) {
 				frame.dispose(); // Close the frame
-				break; // Exit the loop after closing the frame
 			}
 		}
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public String getPredictionResult() {
+		return predictionString;
+	}
+
+	public void setPredictionResult(String predictionResult) {
+		this.predictionString = predictionResult;
 	}
 }
