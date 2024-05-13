@@ -94,12 +94,13 @@ public class AgentAddAnalyses extends Agent {
 					fe.printStackTrace();
 				}
 
-				ACLMessage message = new ACLMessage(ACLMessage.REQUEST);
+				ACLMessage message = new ACLMessage(ACLMessage.PROPAGATE);
 				for (AID agent : agentsAnalysesManagers) {
 					message.addReceiver(agent);
 				}
-				message.setContent(newAnalysis.convertAnalysisToPredictToString());
-
+				message.setContent(newAnalysis.convertStringForFile());
+				message.setProtocol(getExecutionState());
+				message.setEncoding(kidneyStonesPresence);
 				// Send the message
 				myAgent.send(message);
 				System.out
