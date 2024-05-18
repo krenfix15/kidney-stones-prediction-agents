@@ -69,7 +69,7 @@ public class AgentPredict extends Agent {
 	private static final int NUM_FEATURES = 6;
 	private static final int NUM_CLASSES = 2;
 	private static final int SEED = 123;
-	private static final int NUM_EPOCHS = 1000;
+	private static final int NUM_EPOCHS = 10000;
 	private static final double[] NEW_ANALYSIS_DATA = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
 	private static List<Double> trainingLosses = new ArrayList<>();
 
