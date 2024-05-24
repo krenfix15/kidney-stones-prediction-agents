@@ -6,6 +6,7 @@ import java.awt.Frame;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
 
@@ -13,6 +14,14 @@ import org.datavec.api.records.reader.RecordReader;
 import org.datavec.api.records.reader.impl.csv.CSVRecordReader;
 import org.datavec.api.split.FileSplit;
 import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator;
+import org.deeplearning4j.earlystopping.EarlyStoppingConfiguration;
+import org.deeplearning4j.earlystopping.EarlyStoppingResult;
+import org.deeplearning4j.earlystopping.saver.InMemoryModelSaver;
+import org.deeplearning4j.earlystopping.scorecalc.DataSetLossCalculator;
+import org.deeplearning4j.earlystopping.termination.MaxEpochsTerminationCondition;
+import org.deeplearning4j.earlystopping.termination.MaxTimeIterationTerminationCondition;
+import org.deeplearning4j.earlystopping.termination.ScoreImprovementEpochTerminationCondition;
+import org.deeplearning4j.earlystopping.trainer.EarlyStoppingTrainer;
 import org.deeplearning4j.nn.api.Model;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
@@ -34,10 +43,12 @@ import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
+import org.nd4j.linalg.dataset.ViewIterator;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
 import org.nd4j.linalg.dataset.api.preprocessor.NormalizerStandardize;
 import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.learning.config.Adam;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
 import jade.core.AID;
@@ -257,15 +268,20 @@ public class AgentPredict extends Agent {
 
 						MultiLayerNetwork model = createModel();
 
-						// Set up chart
-						JFrame frame = new JFrame("Training Loss");
+						// Set up chart for training and validation loss
+						JFrame frame = new JFrame("Training and Validation Loss");
 						frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 						frame.setLayout(new BorderLayout());
 
-						XYSeries series = new XYSeries("Training Loss");
+						XYSeries trainingSeries = new XYSeries("Training Loss");
+						XYSeries validationSeries = new XYSeries("Validation Loss");
 
-						JFreeChart chart = ChartFactory.createXYLineChart("Training Loss", "Epoch", "Loss",
-								new XYSeriesCollection(series), PlotOrientation.VERTICAL, true, true, false);
+						XYSeriesCollection dataset = new XYSeriesCollection();
+						dataset.addSeries(trainingSeries);
+						dataset.addSeries(validationSeries);
+
+						JFreeChart chart = ChartFactory.createXYLineChart("Training and Validation Loss", "Epoch",
+								"Loss", dataset, PlotOrientation.VERTICAL, true, true, false);
 
 						ChartPanel panel = new ChartPanel(chart);
 						panel.setPreferredSize(new Dimension(800, 600));
@@ -273,52 +289,58 @@ public class AgentPredict extends Agent {
 						frame.pack();
 						frame.setVisible(true);
 
-						// Add training listener to collect training loss values
+						// Add training listener to collect training and validation loss values
 						model.setListeners(new TrainingListener() {
 							private int epochCount = 0;
 
 							@Override
 							public void iterationDone(Model model, int iteration, int epoch) {
-								double score = model.score();
-								System.out.println("Training Loss at epoch " + epochCount + ": " + score);
-								trainingLosses.add(score);
-								series.add(epochCount++, score);
+								// Calculate how many iterations per epoch
+								int numIterations = (int) Math.ceil((double) trainingData.numExamples() / BATCH_SIZE);
+
+								if (iteration % numIterations == 0) {
+									double trainingLoss = model.score();
+									double validationLoss = getValidationLoss((MultiLayerNetwork) model, testingData);
+
+									System.out.println("Epoch " + epochCount + " Training Loss: " + trainingLoss
+											+ ", Validation Loss: " + validationLoss);
+
+									trainingLosses.add(trainingLoss);
+									trainingSeries.add(epochCount, trainingLoss);
+									validationSeries.add(epochCount, validationLoss);
+
+									epochCount++;
+								}
 							}
 
 							@Override
 							public void onEpochStart(Model model) {
-								// TODO Auto-generated method stub
-
+								// Not needed
 							}
 
 							@Override
 							public void onEpochEnd(Model model) {
-								// TODO Auto-generated method stub
-
+								// Not needed
 							}
 
 							@Override
 							public void onForwardPass(Model model, List<INDArray> activations) {
-								// TODO Auto-generated method stub
-
+								// Not needed
 							}
 
 							@Override
 							public void onForwardPass(Model model, Map<String, INDArray> activations) {
-								// TODO Auto-generated method stub
-
+								// Not needed
 							}
 
 							@Override
 							public void onGradientCalculation(Model model) {
-								// TODO Auto-generated method stub
-
+								// Not needed
 							}
 
 							@Override
 							public void onBackwardPass(Model model) {
-								// TODO Auto-generated method stub
-
+								// Not needed
 							}
 						});
 
@@ -342,8 +364,7 @@ public class AgentPredict extends Agent {
 						message.setContent("Dataset was not received yet!");
 						// Send the message
 						myAgent.send(message);
-						System.out
-								.println("\nMessage sent to the analyses manager: " + "dataset was not received yet!");
+						System.out.println("\nMessage sent to the analyses manager: dataset was not received yet!");
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -355,14 +376,26 @@ public class AgentPredict extends Agent {
 		});
 	}
 
+	private static double getValidationLoss(MultiLayerNetwork model, DataSet validationData) {
+		INDArray features = validationData.getFeatures();
+		INDArray labels = validationData.getLabels();
+		INDArray output = model.output(features, false);
+		double loss = model.score(new DataSet(features, labels));
+		return loss;
+	}
+
 	private static MultiLayerNetwork createModel() {
 		MultiLayerConfiguration configuration = new NeuralNetConfiguration.Builder().seed(SEED)
-				.optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT).weightInit(WeightInit.XAVIER)
-				.list()
-				.layer(0, new DenseLayer.Builder().nIn(NUM_FEATURES).nOut(64).activation(Activation.RELU).build())
-				.layer(1, new DenseLayer.Builder().nIn(64).nOut(32).activation(Activation.RELU).build())
-				.layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.XENT).activation(Activation.SIGMOID)
-						.nIn(32).nOut(NUM_CLASSES).build())
+				.optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT).updater(new Adam(0.0001))
+				.weightInit(WeightInit.XAVIER).l2(0.001) // Adjust L2 regularization strength
+				.list().layer(0, new DenseLayer.Builder().nIn(NUM_FEATURES).nOut(256) // Increase number of units
+						.activation(Activation.RELU).dropOut(0.5).build())
+				.layer(1, new DenseLayer.Builder().nIn(256).nOut(128) // Adjust number of units
+						.activation(Activation.RELU).dropOut(0.5).build())
+				.layer(2, new DenseLayer.Builder().nIn(128).nOut(64) // Adjust number of units
+						.activation(Activation.RELU).dropOut(0.5).build())
+				.layer(3, new OutputLayer.Builder(LossFunctions.LossFunction.XENT).activation(Activation.SIGMOID)
+						.nIn(64).nOut(NUM_CLASSES).build())
 				.build();
 
 		MultiLayerNetwork model = new MultiLayerNetwork(configuration);
@@ -371,9 +404,23 @@ public class AgentPredict extends Agent {
 	}
 
 	private static void trainModel(MultiLayerNetwork model, DataSet trainingData) {
-		for (int epoch = 0; epoch < NUM_EPOCHS; epoch++) {
-			model.fit(trainingData);
-		}
+		EarlyStoppingConfiguration<MultiLayerNetwork> esConf = new EarlyStoppingConfiguration.Builder<MultiLayerNetwork>()
+				.epochTerminationConditions(new MaxEpochsTerminationCondition(NUM_EPOCHS),
+						new ScoreImprovementEpochTerminationCondition(15)) // Stop if no improvement for 10 epochs
+				.evaluateEveryNEpochs(1)
+				.iterationTerminationConditions(new MaxTimeIterationTerminationCondition(1, TimeUnit.HOURS))
+				.scoreCalculator(new DataSetLossCalculator(new ViewIterator(trainingData, BATCH_SIZE), true))
+				.modelSaver(new InMemoryModelSaver<MultiLayerNetwork>()).build();
+
+		EarlyStoppingTrainer trainer = new EarlyStoppingTrainer(esConf, model,
+				new ViewIterator(trainingData, BATCH_SIZE));
+		EarlyStoppingResult<MultiLayerNetwork> result = trainer.fit();
+
+		System.out.println("Termination reason: " + result.getTerminationReason());
+		System.out.println("Termination details: " + result.getTerminationDetails());
+		System.out.println("Total epochs: " + result.getTotalEpochs());
+		System.out.println("Best epoch number: " + result.getBestModelEpoch());
+		System.out.println("Score at best epoch: " + result.getBestModelScore());
 	}
 
 	private static Evaluation evaluateModel(MultiLayerNetwork model, DataSet testingData) {
@@ -406,7 +453,7 @@ public class AgentPredict extends Agent {
 		// Get all frames owned by this agent
 		Frame[] frames = Frame.getFrames();
 		for (Frame frame : frames) {
-			if (frame instanceof JFrame && frame.getTitle().equals("Training Loss")) {
+			if (frame instanceof JFrame && frame.getTitle().equals("Training and Validation Loss")) {
 				frame.dispose(); // Close the frame
 			}
 		}
