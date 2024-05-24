@@ -256,7 +256,7 @@ public class AgentPredict extends Agent {
 						allData.shuffle(42);
 
 						// Split the data into training (80%) and testing (20%) sets
-						SplitTestAndTrain testAndTrain = allData.splitTestAndTrain(0.8);
+						SplitTestAndTrain testAndTrain = allData.splitTestAndTrain(0.79);
 						DataSet trainingData = testAndTrain.getTrain();
 						DataSet testingData = testAndTrain.getTest();
 
