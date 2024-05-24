@@ -12,15 +12,15 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/eclipse-workspace/KidneyAnalysesAgents/lib/commons-codec-1.3.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse-workspace/KidneyAnalysesAgents/lib/jade.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse-workspace/KidneyAnalysesAgents/lib/jade-javadoc.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse-workspace/KidneyAnalysesAgents/lib/jade-src.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse-workspace/KidneyAnalysesAgents/lib/gnujaxp.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse-workspace/KidneyAnalysesAgents/lib/jcommon-1.0.0.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse-workspace/KidneyAnalysesAgents/lib/jfreechart-1.0.1.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse-workspace/KidneyAnalysesAgents/lib/junit.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse-workspace/KidneyAnalysesAgents/lib/servlet.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse-workspace/KidneyAnalysesAgents/lib/miglayout-swing.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse-workspace/KidneyAnalysesAgents/lib/commons-codec-1.3.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse-workspace/KidneyAnalysesAgents/lib/jade.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse-workspace/KidneyAnalysesAgents/lib/jade-javadoc.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse-workspace/KidneyAnalysesAgents/lib/jade-src.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse-workspace/KidneyAnalysesAgents/lib/gnujaxp.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse-workspace/KidneyAnalysesAgents/lib/jcommon-1.0.0.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse-workspace/KidneyAnalysesAgents/lib/jfreechart-1.0.1.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse-workspace/KidneyAnalysesAgents/lib/junit.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse-workspace/KidneyAnalysesAgents/lib/servlet.jar"/>
+	<classpathentry kind="lib" path="D:/eclipse-workspace/KidneyAnalysesAgents/lib/miglayout-swing.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
