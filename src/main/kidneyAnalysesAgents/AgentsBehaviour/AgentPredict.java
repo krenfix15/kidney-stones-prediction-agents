@@ -3,6 +3,10 @@ package main.kidneyAnalysesAgents.AgentsBehaviour;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +43,8 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.nd4j.common.io.ClassPathResource;
 import org.nd4j.evaluation.classification.Evaluation;
+import org.nd4j.evaluation.classification.ROCBinary;
+import org.nd4j.evaluation.curves.RocCurve;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
@@ -76,7 +82,8 @@ public class AgentPredict extends Agent {
 
 	String predictionString;
 
-	private static final int BATCH_SIZE = 64;
+	private static int BATCH_SIZE;
+
 	private static final int NUM_FEATURES = 6;
 	private static final int NUM_CLASSES = 2;
 	private static final int SEED = 123;
@@ -246,6 +253,15 @@ public class AgentPredict extends Agent {
 
 				try {
 					if (filename != null) {
+						if(filename.equals("urineAnalyses.csv"))
+						{
+							setBATCH_SIZE(countLines("urineAnalyses.csv"));
+						}
+						else
+						{
+							setBATCH_SIZE(countLines("selectedUrineAnalyses.csv"));
+						}
+						
 						RecordReader recordReader = new CSVRecordReader(1);
 						recordReader.initialize(new FileSplit(new ClassPathResource(filename).getFile()));
 
@@ -420,18 +436,82 @@ public class AgentPredict extends Agent {
 		System.out.println("Termination details: " + result.getTerminationDetails());
 		System.out.println("Total epochs: " + result.getTotalEpochs());
 		System.out.println("Best epoch number: " + result.getBestModelEpoch());
-		System.out.println("Score at best epoch: " + result.getBestModelScore());
 	}
 
 	private static Evaluation evaluateModel(MultiLayerNetwork model, DataSet testingData) {
-		Evaluation evaluation = new Evaluation(NUM_CLASSES);
-		INDArray features = testingData.getFeatures();
-		INDArray labels = testingData.getLabels();
-		INDArray predicted = model.output(features, false);
-		evaluation.eval(labels, predicted);
-		double accuracy = evaluation.accuracy();
-		System.out.println("Accuracy on testing data: " + (accuracy * 100) + "%");
-		return evaluation;
+	    Evaluation evaluation = new Evaluation(NUM_CLASSES);
+	    INDArray features = testingData.getFeatures();
+	    INDArray labels = testingData.getLabels();
+	    INDArray predicted = model.output(features, false);
+	    evaluation.eval(labels, predicted);
+
+	    System.out.println("\n------------------------------------");
+	    System.out.println("Evaluation Metrics:");
+	    System.out.println("Accuracy on testing data : " + String.format("%.4f", evaluation.accuracy() * 100) + "%");
+	    System.out.println("Precision on testing data: " + String.format("%.4f", evaluation.precision() * 100) + "%");
+	    System.out.println("Recall on testing data   : " + String.format("%.4f", evaluation.recall() * 100) + "%");
+	    System.out.println("F1 score on testing data : " + String.format("%.4f", evaluation.f1() * 100) + "%");
+	    System.out.println("------------------------------------\n");
+	    
+	    System.out.println("Confusion Matrix:");
+	    System.out.println(evaluation.confusionToString());
+
+	    // Calculate ROC
+	    ROCBinary roc = new ROCBinary();
+	    roc.eval(labels, predicted);
+
+	    // Plot ROC curve
+	    plotROCCurve(roc);
+	    
+	    // Calculate and print AUC for each class
+	    for (int i = 0; i < NUM_CLASSES; i++) {
+	        double auc = roc.calculateAUC(i);
+	        System.out.printf("Class %d AUC: %.4f%n", i, auc);
+	    }
+	    
+	    return evaluation;
+	}
+	
+	private static void plotROCCurve(ROCBinary roc) {
+	    // Create a dataset for JFreeChart
+	    XYSeriesCollection dataset = new XYSeriesCollection();
+
+	    for (int i = 0; i < NUM_CLASSES; i++) {
+	        RocCurve rocCurve = roc.getRocCurve(i);
+
+	        // Create an XY series for each class
+	        XYSeries rocSeries = new XYSeries("Class " + i);
+
+	        // Use getFpr() and getTpr() to get the points
+	        double[] fpr = rocCurve.getFpr();
+	        double[] tpr = rocCurve.getTpr();
+
+	        for (int j = 0; j < fpr.length; j++) {
+	            rocSeries.add(fpr[j], tpr[j]);
+	        }
+
+	        dataset.addSeries(rocSeries);
+	    }
+
+	    // Create the chart
+	    JFreeChart chart = ChartFactory.createXYLineChart(
+	        "ROC Curve",
+	        "False Positive Rate",
+	        "True Positive Rate",
+	        dataset,
+	        PlotOrientation.VERTICAL,
+	        true,
+	        true,
+	        false
+	    );
+
+	    // Display the chart in a JFrame
+	    JFrame frame = new JFrame("ROC Curve");
+	    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	    ChartPanel chartPanel = new ChartPanel(chart);
+	    frame.add(chartPanel);
+	    frame.pack();
+	    frame.setVisible(true);
 	}
 
 	private static String makePredictions(MultiLayerNetwork model) {
@@ -439,10 +519,10 @@ public class AgentPredict extends Agent {
 		INDArray input = Nd4j.create(NEW_ANALYSIS_DATA).reshape(1, NEW_ANALYSIS_DATA.length);
 		INDArray prediction = model.output(input);
 		if (prediction.getDouble(0, 1) == 1.0) {
-			System.out.println("Predicted probability of kidney stones presence: PRESENT!");
+			System.out.println("\nPredicted probability of kidney stones presence: PRESENT!");
 			predictionString = "KIDNEY STONES ARE PRESENT";
 		} else {
-			System.out.println("Predicted probability of kidney stones presence: NOT PRESENT!");
+			System.out.println("\nPredicted probability of kidney stones presence: NOT PRESENT!");
 			predictionString = "KIDNEY STONES ARE NOT PRESENT";
 		}
 
@@ -459,6 +539,33 @@ public class AgentPredict extends Agent {
 		}
 	}
 
+	private static int countLines(String filePath) {
+	    int lines = 0;
+	    BufferedReader reader = null;
+	    try {
+	        InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(filePath);
+	        if (inputStream != null) {
+	            reader = new BufferedReader(new InputStreamReader(inputStream));
+	            while (reader.readLine() != null) {
+	                lines++;
+	            }
+	        } else {
+	            System.out.println("File not found: " + filePath);
+	        }
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    } finally {
+	        if (reader != null) {
+	            try {
+	                reader.close();
+	            } catch (IOException e) {
+	                e.printStackTrace();
+	            }
+	        }
+	    }
+	    return lines;
+	}
+	
 	public void setFilename(String filename) {
 		this.filename = filename;
 	}
@@ -473,5 +580,13 @@ public class AgentPredict extends Agent {
 
 	public void setPredictionResult(String predictionResult) {
 		this.predictionString = predictionResult;
+	}
+	
+	public static int getBATCH_SIZE() {
+		return BATCH_SIZE;
+	}
+
+	public static void setBATCH_SIZE(int bATCH_SIZE) {
+		BATCH_SIZE = bATCH_SIZE;
 	}
 }
