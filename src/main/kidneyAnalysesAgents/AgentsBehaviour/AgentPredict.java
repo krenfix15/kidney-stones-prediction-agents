@@ -447,10 +447,10 @@ public class AgentPredict extends Agent {
 
 	    System.out.println("\n------------------------------------");
 	    System.out.println("Evaluation Metrics:");
-	    System.out.println("Accuracy on testing data : " + String.format("%.4f", evaluation.accuracy() * 100) + "%");
+	    System.out.println("Accuracy on testing data :  " + String.format("%.4f", evaluation.accuracy() * 100) + "%");
 	    System.out.println("Precision on testing data: " + String.format("%.4f", evaluation.precision() * 100) + "%");
-	    System.out.println("Recall on testing data   : " + String.format("%.4f", evaluation.recall() * 100) + "%");
-	    System.out.println("F1 score on testing data : " + String.format("%.4f", evaluation.f1() * 100) + "%");
+	    System.out.println("Recall on testing data   :  " + String.format("%.4f", evaluation.recall() * 100) + "%");
+	    System.out.println("F1 score on testing data :  " + String.format("%.4f", evaluation.f1() * 100) + "%");
 	    System.out.println("------------------------------------\n");
 	    
 	    System.out.println("Confusion Matrix:");
