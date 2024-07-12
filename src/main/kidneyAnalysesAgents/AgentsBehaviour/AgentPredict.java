@@ -485,8 +485,8 @@ public class AgentPredict extends Agent {
 	    double class0Probability = prediction.getDouble(0, 0); // Probability of class 0 ("NOT PRESENT")
 	    double class1Probability = prediction.getDouble(0, 1); // Probability of class 1 ("PRESENT")
 	    
-	    System.out.printf("\nClass 0 Probability (NOT PRESENT): %.3f%%\n", class0Probability * 100);
-	    System.out.printf("Class 1 Probability (PRESENT): %.3f%%\n", class1Probability * 100);
+	    System.out.printf("\nClass 0 Probability (NOT PRESENT): %.2f%%\n", class0Probability * 100);
+	    System.out.printf("Class 1 Probability (PRESENT): %.2f%%\n", class1Probability * 100);
 	    
 	    if (class1Probability > class0Probability) {
 	        predictionString = "KIDNEY STONES ARE PRESENT";
