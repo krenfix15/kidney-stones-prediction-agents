@@ -144,11 +144,11 @@ public class AgentPredict extends Agent {
 				analysisToPredict.setCalciumString(calcium);
 
 				NEW_ANALYSIS_DATA[0] = Double.parseDouble(analysisToPredict.getGravityString());
-				NEW_ANALYSIS_DATA[1] = Double.parseDouble(analysisToPredict.getGravityString());
-				NEW_ANALYSIS_DATA[2] = Double.parseDouble(analysisToPredict.getGravityString());
-				NEW_ANALYSIS_DATA[3] = Double.parseDouble(analysisToPredict.getGravityString());
-				NEW_ANALYSIS_DATA[4] = Double.parseDouble(analysisToPredict.getGravityString());
-				NEW_ANALYSIS_DATA[5] = Double.parseDouble(analysisToPredict.getGravityString());
+				NEW_ANALYSIS_DATA[1] = Double.parseDouble(analysisToPredict.getPhString());
+				NEW_ANALYSIS_DATA[2] = Double.parseDouble(analysisToPredict.getOsmoString());
+				NEW_ANALYSIS_DATA[3] = Double.parseDouble(analysisToPredict.getConductivityString());
+				NEW_ANALYSIS_DATA[4] = Double.parseDouble(analysisToPredict.getUreaString());
+				NEW_ANALYSIS_DATA[5] = Double.parseDouble(analysisToPredict.getCalciumString());
 
 				DFAgentDescription template = new DFAgentDescription();
 				ServiceDescription sd = new ServiceDescription();
@@ -366,7 +366,7 @@ public class AgentPredict extends Agent {
 						evaluateModel(model, testingData);
 
 						// Make predictions
-						predictionString = makePredictions(model);
+						predictionString = makePredictions(model, normalizer, NEW_ANALYSIS_DATA);
 
 						closeChartFrame();
 
@@ -403,12 +403,12 @@ public class AgentPredict extends Agent {
 	private static MultiLayerNetwork createModel() {
 		MultiLayerConfiguration configuration = new NeuralNetConfiguration.Builder().seed(SEED)
 				.optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT).updater(new Adam(0.0001))
-				.weightInit(WeightInit.XAVIER).l2(0.001) // Adjust L2 regularization strength
-				.list().layer(0, new DenseLayer.Builder().nIn(NUM_FEATURES).nOut(256) // Increase number of units
+				.weightInit(WeightInit.XAVIER).l2(0.001)
+				.list().layer(0, new DenseLayer.Builder().nIn(NUM_FEATURES).nOut(256)
 						.activation(Activation.RELU).dropOut(0.5).build())
-				.layer(1, new DenseLayer.Builder().nIn(256).nOut(128) // Adjust number of units
+				.layer(1, new DenseLayer.Builder().nIn(256).nOut(128)
 						.activation(Activation.RELU).dropOut(0.5).build())
-				.layer(2, new DenseLayer.Builder().nIn(128).nOut(64) // Adjust number of units
+				.layer(2, new DenseLayer.Builder().nIn(128).nOut(64)
 						.activation(Activation.RELU).dropOut(0.5).build())
 				.layer(3, new OutputLayer.Builder(LossFunctions.LossFunction.XENT).activation(Activation.SIGMOID)
 						.nIn(64).nOut(NUM_CLASSES).build())
@@ -432,10 +432,10 @@ public class AgentPredict extends Agent {
 				new ViewIterator(trainingData, BATCH_SIZE));
 		EarlyStoppingResult<MultiLayerNetwork> result = trainer.fit();
 
-		System.out.println("Termination reason: " + result.getTerminationReason());
+		System.out.println("\nTermination reason : " + result.getTerminationReason());
 		System.out.println("Termination details: " + result.getTerminationDetails());
-		System.out.println("Total epochs: " + result.getTotalEpochs());
-		System.out.println("Best epoch number: " + result.getBestModelEpoch());
+		System.out.println("Total epochs       : " + result.getTotalEpochs());
+		System.out.println("Best epoch number  : " + result.getBestModelEpoch());
 	}
 
 	private static Evaluation evaluateModel(MultiLayerNetwork model, DataSet testingData) {
@@ -447,10 +447,10 @@ public class AgentPredict extends Agent {
 
 	    System.out.println("\n------------------------------------");
 	    System.out.println("Evaluation Metrics:");
-	    System.out.println("Accuracy on testing data :  " + String.format("%.4f", evaluation.accuracy() * 100) + "%");
+	    System.out.println("Accuracy on testing data : " + String.format("%.4f", evaluation.accuracy() * 100) + "%");
 	    System.out.println("Precision on testing data: " + String.format("%.4f", evaluation.precision() * 100) + "%");
-	    System.out.println("Recall on testing data   :  " + String.format("%.4f", evaluation.recall() * 100) + "%");
-	    System.out.println("F1 score on testing data :  " + String.format("%.4f", evaluation.f1() * 100) + "%");
+	    System.out.println("Recall on testing data   : " + String.format("%.4f", evaluation.recall() * 100) + "%");
+	    System.out.println("F1 score on testing data : " + String.format("%.4f", evaluation.f1() * 100) + "%");
 	    System.out.println("------------------------------------\n");
 	    
 	    System.out.println("Confusion Matrix:");
@@ -472,6 +472,31 @@ public class AgentPredict extends Agent {
 	    return evaluation;
 	}
 	
+	private static String makePredictions(MultiLayerNetwork model, DataNormalization normalizer, double[] NEW_ANALYSIS_DATA) {
+	    String predictionString;
+	    INDArray input = Nd4j.create(NEW_ANALYSIS_DATA).reshape(1, NEW_ANALYSIS_DATA.length);
+
+	    // Normalize the new analysis data with the pre-fitted normalizer
+	    normalizer.transform(input);
+
+	    // Make predictions
+	    INDArray prediction = model.output(input);
+	    
+	    double class0Probability = prediction.getDouble(0, 0); // Probability of class 0 ("NOT PRESENT")
+	    double class1Probability = prediction.getDouble(0, 1); // Probability of class 1 ("PRESENT")
+	    
+	    System.out.printf("\nClass 0 Probability (NOT PRESENT): %.3f%%\n", class0Probability * 100);
+	    System.out.printf("Class 1 Probability (PRESENT): %.3f%%\n", class1Probability * 100);
+	    
+	    if (class1Probability > class0Probability) {
+	        predictionString = "KIDNEY STONES ARE PRESENT";
+	    } else {
+	        predictionString = "KIDNEY STONES ARE NOT PRESENT";
+	    }
+
+	    return predictionString;
+	}
+	
 	private static void plotROCCurve(ROCBinary roc) {
 	    // Create a dataset for JFreeChart
 	    XYSeriesCollection dataset = new XYSeriesCollection();
@@ -482,7 +507,6 @@ public class AgentPredict extends Agent {
 	        // Create an XY series for each class
 	        XYSeries rocSeries = new XYSeries("Class " + i);
 
-	        // Use getFpr() and getTpr() to get the points
 	        double[] fpr = rocCurve.getFpr();
 	        double[] tpr = rocCurve.getTpr();
 
@@ -493,7 +517,6 @@ public class AgentPredict extends Agent {
 	        dataset.addSeries(rocSeries);
 	    }
 
-	    // Create the chart
 	    JFreeChart chart = ChartFactory.createXYLineChart(
 	        "ROC Curve",
 	        "False Positive Rate",
@@ -514,27 +537,12 @@ public class AgentPredict extends Agent {
 	    frame.setVisible(true);
 	}
 
-	private static String makePredictions(MultiLayerNetwork model) {
-		String predictionString;
-		INDArray input = Nd4j.create(NEW_ANALYSIS_DATA).reshape(1, NEW_ANALYSIS_DATA.length);
-		INDArray prediction = model.output(input);
-		if (prediction.getDouble(0, 1) == 1.0) {
-			System.out.println("\nPredicted probability of kidney stones presence: PRESENT!");
-			predictionString = "KIDNEY STONES ARE PRESENT";
-		} else {
-			System.out.println("\nPredicted probability of kidney stones presence: NOT PRESENT!");
-			predictionString = "KIDNEY STONES ARE NOT PRESENT";
-		}
-
-		return predictionString;
-	}
-
 	private void closeChartFrame() {
 		// Get all frames owned by this agent
 		Frame[] frames = Frame.getFrames();
 		for (Frame frame : frames) {
 			if (frame instanceof JFrame && frame.getTitle().equals("Training and Validation Loss")) {
-				frame.dispose(); // Close the frame
+				frame.dispose();
 			}
 		}
 	}
