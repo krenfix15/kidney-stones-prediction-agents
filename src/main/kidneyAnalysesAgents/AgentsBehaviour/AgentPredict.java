@@ -476,6 +476,16 @@ public class AgentPredict extends Agent {
 	    String predictionString;
 	    INDArray input = Nd4j.create(NEW_ANALYSIS_DATA).reshape(1, NEW_ANALYSIS_DATA.length);
 
+	    System.out.println("\n-----------------------------------------");
+	    System.out.println("Prediction made on these urine analysis: ");
+	    System.out.printf("Gravity       : %.3f", NEW_ANALYSIS_DATA[0]);
+	    System.out.printf("\npH            : %.3f", NEW_ANALYSIS_DATA[1]);
+	    System.out.printf("\nOsmolarity    : %.3f", NEW_ANALYSIS_DATA[2]);
+	    System.out.printf("\nConductivity  : %.3f", NEW_ANALYSIS_DATA[3]);
+	    System.out.printf("\nUrea level    : %.3f", NEW_ANALYSIS_DATA[4]);
+	    System.out.printf("\nCalcium level : %.3f", NEW_ANALYSIS_DATA[5]);
+	    System.out.println("\n-----------------------------------------");
+	    
 	    // Normalize the new analysis data with the pre-fitted normalizer
 	    normalizer.transform(input);
 
