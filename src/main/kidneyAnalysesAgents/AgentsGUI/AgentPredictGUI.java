@@ -274,7 +274,7 @@ public class AgentPredictGUI extends JFrame {
 					}
 
 					setDefaultTextForTexboxes();
-					//setDefaultColorForTexboxes(Color.LIGHT_GRAY);
+					setDefaultColorForTexboxes(Color.LIGHT_GRAY);
 				} else {
 					System.out.print("Predicting was not possible, check the validity of the inputs!\n");
 				}
