@@ -395,7 +395,6 @@ public class AgentPredict extends Agent {
 	private static double getValidationLoss(MultiLayerNetwork model, DataSet validationData) {
 		INDArray features = validationData.getFeatures();
 		INDArray labels = validationData.getLabels();
-		INDArray output = model.output(features, false);
 		double loss = model.score(new DataSet(features, labels));
 		return loss;
 	}
